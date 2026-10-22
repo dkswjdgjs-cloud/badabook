@@ -1,4 +1,5 @@
 html,body{margin:0}
+html{background:#EAF6F8}
 img{max-width:100%}
 [hidden]{display:none!important}
 /* Layout: 바다 위에서 아래로 내려가는 한 장짜리 스크롤. 하늘(히어로) → 물결 → 이달의 소식 → 행사 → 매장 → 채널 → 바닥(푸터) */
@@ -35,7 +36,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--sea);outline-offset
 .todo{background:color-mix(in srgb,var(--sun) 35%,transparent);border-radius:6px;padding:0 6px;font-size:.92em;white-space:nowrap}
 
 /* 헤더 */
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--sky) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sky);border-bottom:1px solid var(--line)}
 header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-size:26px;color:var(--sea-deep)}
 .logo-mark{width:44px;height:44px;border-radius:50%;flex:none;object-fit:cover;background:#fff;border:2px solid var(--line)}
