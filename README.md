@@ -16,9 +16,9 @@
 ## 행사 자동 반영 (인스타그램)
 
 매일 오전 7시에 GitHub Actions(`.github/workflows/instagram-sync.yml`)가 `scripts/sync_instagram.py`를 실행해요.
-인스타그램 새 게시물을 Claude가 읽고, 행사·부모교실 글이면 `data/events.js`에 추가해요. 사진은 `images/events/`에 저장돼요.
+인스타그램 새 게시물을 제미나이(무료 API)가 읽고, 행사·부모교실 글이면 `data/events.js`에 추가해요. 사진은 `images/events/`에 저장돼요.
 기간이 지난 행사는 홈페이지에서 자동으로 빠지거나 "종료"로 표시돼요.
 
-- 필요한 비밀값(Settings → Secrets and variables → Actions): `IG_ACCESS_TOKEN`, `ANTHROPIC_API_KEY`
+- 필요한 비밀값(Settings → Secrets and variables → Actions): `IG_ACCESS_TOKEN`, `GEMINI_API_KEY`
 - 바로 돌려보기: Actions 탭 → "인스타그램 행사 자동 반영" → Run workflow
 - 직접 넣은 항목(`"source": "manual"`)은 자동 작업이 건드리지 않아요. 잘못 올라간 항목은 `data/events.js`에서 지우면 돼요.

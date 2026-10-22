@@ -2,7 +2,8 @@
 
 GitHub Actions가 매일 실행한다. 필요한 비밀값:
   IG_ACCESS_TOKEN    인스타그램 장기 토큰 (Instagram API with Instagram Login)
-  ANTHROPIC_API_KEY  Claude API 키
+  GEMINI_API_KEY     제미나이 API 키 (aistudio.google.com, 무료)
+선택: GEMINI_MODEL 변수 (기본값 gemini-flash-latest)
 """
 
 import base64
@@ -12,11 +13,12 @@ import json
 import os
 import pathlib
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from typing import List, Literal
 
-import anthropic
 from PIL import Image
 from pydantic import BaseModel
 
@@ -28,10 +30,13 @@ PREFIX = "window.EVENTS = "
 GRAPH = "https://graph.instagram.com"
 KST = dt.timezone(dt.timedelta(hours=9))
 LOOKBACK_DAYS = 60  # 이보다 오래된 게시물은 보지 않음
-MAX_IMAGES = 4  # 캐러셀에서 Claude에게 보여줄 사진 수
+MAX_IMAGES = 4  # 캐러셀에서 제미나이에게 보여줄 사진 수
 
 
-# ---------- Claude가 채울 형식 ----------
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-flash-latest"
+
+
+# ---------- 제미나이가 채울 형식 ----------
 class Session(BaseModel):
     date: str  # YYYY-MM-DD
     time: str  # 예: "오전 10:30" (모르면 "")
@@ -120,24 +125,48 @@ def to_jpeg(raw: bytes, width: int) -> bytes:
     return buf.getvalue()
 
 
-def analyze(client: anthropic.Anthropic, caption: str, posted: str, jpegs: List[bytes]) -> Post | None:
-    content = [
-        {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": base64.b64encode(j).decode()}}
-        for j in jpegs
-    ]
-    content.append({"type": "text", "text": f"게시일: {posted}\n\n게시물 글:\n{caption or '(글 없음)'}"})
-    resp = client.messages.parse(
-        model="claude-opus-5-5",
-        max_tokens=16000,
-        system=SYSTEM,
-        output_config={"effort": "low"},
-        messages=[{"role": "user", "content": content}],
-        output_format=Post,
-    )
-    if resp.stop_reason == "refusal":
-        print("  Claude가 이 게시물 분석을 거절해서 건너뜀")
-        return None
-    return resp.parsed_output
+S = {"type": "STRING"}
+SCHEMA = {
+    "type": "OBJECT",
+    "properties": {
+        "kind": {"type": "STRING", "enum": ["promo", "class", "other"]},
+        "title": S, "tag": S, "body": S, "meta": S, "start": S, "end": S,
+        "sessions": {
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {"date": S, "time": S, "title": S, "info": S, "target": S},
+                "required": ["date", "time", "title", "info", "target"],
+            },
+        },
+    },
+    "required": ["kind", "title", "tag", "body", "meta", "start", "end", "sessions"],
+}
+
+
+def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
+    parts = [{"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(j).decode()}} for j in jpegs]
+    parts.append({"text": f"게시일: {posted}\n\n게시물 글:\n{caption or '(글 없음)'}"})
+    body = json.dumps({
+        "system_instruction": {"parts": [{"text": SYSTEM}]},
+        "contents": [{"role": "user", "parts": parts}],
+        "generationConfig": {"responseMimeType": "application/json", "responseSchema": SCHEMA, "temperature": 0.2},
+    }).encode()
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
+    for attempt in range(4):
+        req = urllib.request.Request(url, data=body, method="POST",
+                                     headers={"Content-Type": "application/json", "x-goog-api-key": key})
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                out = json.load(r)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 500, 503) and attempt < 3:  # 무료 한도·일시 오류면 잠깐 쉬고 다시
+                time.sleep(30 * (attempt + 1))
+                continue
+            raise RuntimeError(f"제미나이 오류 {e.code}: {e.read()[:300]!r}")
+    text = "".join(p.get("text", "") for p in out["candidates"][0]["content"]["parts"])
+    return Post.model_validate_json(text)
 
 
 def load_events() -> dict:
@@ -168,22 +197,23 @@ def main() -> int:
     new = [m for m in media if m["id"] not in seen and dt.date.fromisoformat(m["timestamp"][:10]) >= cutoff]
     print(f"최근 게시물 {len(media)}개 중 새 게시물 {len(new)}개")
 
-    client = anthropic.Anthropic()
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        print("::error::GEMINI_API_KEY 비밀값이 없어요.")
+        return 1
     changed = False
     for m in reversed(new):  # 오래된 것부터
         posted = dt.datetime.fromisoformat(m["timestamp"].replace("+0000", "+00:00")).astimezone(KST).date().isoformat()
         print(f"- {posted} {m.get('permalink')}")
         try:
             raws = [http_bytes(u) for u in media_images(m, token)]
-            post = analyze(client, m.get("caption", ""), posted, [to_jpeg(r, 1200) for r in raws])
-        except anthropic.APIStatusError as e:
-            print(f"::warning::Claude API 오류 {e.status_code}: 이 게시물은 내일 다시 시도해요.")
-            continue
+            post = analyze(key, m.get("caption", ""), posted, [to_jpeg(r, 1200) for r in raws])
+            time.sleep(5)  # 무료 한도(분당 요청 수) 여유
         except Exception as e:
             print(f"::warning::게시물 처리 실패 ({e}): 내일 다시 시도해요.")
             continue
         seen.add(m["id"])
-        if post is None or post.kind == "other":
+        if post.kind == "other":
             print("  행사 글 아님")
             continue
         img = ""
