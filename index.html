@@ -11,9 +11,10 @@
 <link rel="icon" href="images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
-<link rel="stylesheet" href="css/style.css?v=202610221313">
-<script src="data/books.js?v=202610221313" defer></script>
-<script src="js/site.js?v=202610221313" defer></script>
+<link rel="stylesheet" href="css/style.css?v=202610221325">
+<script src="data/books.js?v=202610221325" defer></script>
+<script src="data/events.js" defer></script>
+<script src="js/site.js?v=202610221325" defer></script>
 </head>
 <body>
 <header>
@@ -65,31 +66,11 @@
   <section class="band band-paper" id="news">
     <div class="wrap">
       <div class="sec-head">
-        <h2>10월 소식</h2>
+        <h2 id="news-title">이번 달 소식</h2>
         <p>지금 매장에서 진행 중인 출판사 이벤트예요. 견본 도서가 매장에 있어 직접 보고 고르실 수 있어요.</p>
       </div>
-      <div class="promo-grid">
-        <article class="promo main">
-          <img class="promo-img" src="images/promo-kkoma.jpg" alt="꼬마 생각 뒤집기 사전예약 포스터" width="800" height="1000">
-          <span class="tag">사전예약 · 10/31(토) 마감</span>
-          <h3>꼬마 생각 뒤집기<br>사전예약 특가 10% 할인</h3>
-          <p>전 40권, 5세 이상, 세이펜 호환. 사전예약하면 '꼬마 생각 일력'을 드리고 영상 이용 기간을 1년 연장해 총 3년 볼 수 있어요. 도서출판 성우 묶음 구매 시 소전집 2~4질을 함께 드려요.</p>
-          <p class="meta">사전예약 특가 396,000원 · 2026.10.01 ~ 10.31</p>
-        </article>
-        <article class="promo">
-          <img class="promo-img" src="images/promo-october.jpg" alt="10월 출판사별 구매 혜택 안내" width="900" height="1172">
-          <span class="tag">10월 출판사 이벤트</span>
-          <h3>구매 사은품 추가 증정</h3>
-          <p>놀라운 자연, 자연이올, 수학특공대, 호호랜드, 말하기 프로그램, 고사리삼국지를 구매하시면 사은품을 더 드려요.</p>
-          <p class="meta">자연이올 보드북 10권 + 양장 40권 매장 입고</p>
-        </article>
-        <article class="promo">
-          <span class="tag">결제 혜택</span>
-          <h3>인천e음 10% 캐시백</h3>
-          <p>천사지원금, 온누리상품권(디지털·지류), 상생페이백, 문화누리카드, 제로페이를 쓸 수 있어요. 비씨·농협·삼성카드는 3개월 무이자예요.</p>
-          <p class="meta">매장 방문이 어려우면 비대면 결제도 가능해요</p>
-        </article>
-      </div>
+      <div class="promo-grid" id="promo-grid"></div>
+      <p class="note" id="promo-empty" hidden>지금은 진행 중인 행사가 없어요. 새 소식은 인스타그램에서 먼저 알려드려요.</p>
     </div>
   </section>
 
@@ -114,22 +95,8 @@
         <h2>부모교실</h2>
         <p>매달 출판사 강사님을 모시고 아이 연령에 맞는 책 읽기 방법을 나눠요. 무료, 선착순이에요. 신청은 문자(010-7540-5490)로 받아요.</p>
       </div>
-      <div class="events-wrap">
-      <img class="poster" src="images/parent-class.jpg" alt="10월 부모교실 일정 안내 포스터" width="800" height="1071">
-      <div class="events">
-        <article class="event">
-          <div class="date"><div class="m">10월</div><div class="d">14</div><div class="w">수 · 오전 10:30</div></div>
-          <div><h3>0~3세 첫 독서법</h3><p class="info">강사 윤나리 (그레이트북스) · 참석자 선물 증정</p></div>
-          <span class="age kelp">36개월 미만 자녀 부모</span>
-        </article>
-        <article class="event">
-          <div class="date"><div class="m">10월</div><div class="d">20</div><div class="w">화 · 오전 10:30</div></div>
-          <div><h3>생각근육 키우는 방법</h3><p class="info">강사 이도원 (도서출판 성우)</p></div>
-          <span class="age sea">5세 이상 자녀 부모</span>
-        </article>
-      </div>
-      </div>
-      <p class="note">10월 부모교실은 끝났어요. 11월 일정은 인스타그램과 블로그에서 먼저 알려드려요.</p>
+      <div class="events-wrap" id="class-wrap"></div>
+      <p class="note" id="class-note"></p>
     </div>
   </section>
 

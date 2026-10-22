@@ -1,3 +1,61 @@
+// 이벤트·부모교실: data/events.js 를 읽어 그림 (인스타 자동 동기화가 이 파일을 매일 고침)
+(function () {
+  var E = window.EVENTS, grid = document.getElementById("promo-grid"), cls = document.getElementById("class-wrap");
+  if (!E || (!grid && !cls)) return;
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  var now = new Date(), today = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
+  var items = E.items || [];
+
+  if (grid) {
+    var t = document.getElementById("news-title"); if (t) t.textContent = (now.getMonth() + 1) + "월 소식";
+    var live = items.filter(function (it) {
+      if (it.kind !== "promo") return false;
+      if (it.always) return true;
+      if (it.end) return it.end >= today;
+      return it.posted ? (Date.parse(today) - Date.parse(it.posted)) / 864e5 <= 30 : false;
+    }).sort(function (a, b) {
+      return (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.always ? 1 : 0) - (b.always ? 1 : 0) || String(b.posted || b.start).localeCompare(String(a.posted || a.start));
+    });
+    grid.innerHTML = live.map(function (it, i) {
+      return '<article class="promo' + (i === 0 && !it.always ? " main" : "") + '">' +
+        (it.image ? '<img class="promo-img" src="' + esc(it.image) + '" alt="' + esc(it.title) + '" loading="lazy">' : "") +
+        (it.tag ? '<span class="tag">' + esc(it.tag) + '</span>' : "") +
+        '<h3>' + esc(it.title) + '</h3>' +
+        (it.body ? '<p>' + esc(it.body) + '</p>' : "") +
+        (it.meta ? '<p class="meta">' + esc(it.meta) + '</p>' : "") +
+        (it.link ? '<p class="meta"><a href="' + esc(it.link) + '" target="_blank" rel="noopener">인스타그램에서 자세히 보기 →</a></p>' : "") +
+        '</article>';
+    }).join("");
+    var empty = document.getElementById("promo-empty"); if (empty) empty.hidden = live.some(function (it) { return !it.always; });
+  }
+
+  if (cls) {
+    var W = ["일", "월", "화", "수", "목", "금", "토"];
+    var groups = items.filter(function (it) { return it.kind === "class" && it.sessions && it.sessions.length; });
+    var upcoming = groups.filter(function (g) { return g.sessions.some(function (s) { return s.date >= today; }); });
+    var pick = upcoming.length ? upcoming : groups.slice().sort(function (a, b) { return b.sessions[b.sessions.length - 1].date.localeCompare(a.sessions[a.sessions.length - 1].date); }).slice(0, 1);
+    var sess = [], poster = "";
+    pick.forEach(function (g) { if (!poster && g.image) poster = g.image; g.sessions.forEach(function (s) { sess.push(s); }); });
+    sess.sort(function (a, b) { return a.date.localeCompare(b.date); });
+    var colors = ["kelp", "sea", ""];
+    cls.innerHTML = (poster ? '<img class="poster" src="' + esc(poster) + '" alt="부모교실 일정 안내 포스터" loading="lazy">' : "") +
+      '<div class="events">' + sess.map(function (s, i) {
+        var d = new Date(s.date + "T00:00:00"), done = s.date < today;
+        return '<article class="event' + (done ? " done" : "") + '">' +
+          '<div class="date"><div class="m">' + (d.getMonth() + 1) + '월</div><div class="d">' + d.getDate() + '</div><div class="w">' + W[d.getDay()] + (s.time ? " · " + esc(s.time) : "") + '</div></div>' +
+          '<div><h3>' + esc(s.title) + (done ? ' <small class="ended">종료</small>' : "") + '</h3>' + (s.info ? '<p class="info">' + esc(s.info) + '</p>' : "") + '</div>' +
+          (s.target ? '<span class="age ' + colors[i % 3] + '">' + esc(s.target) + '</span>' : "") +
+          '</article>';
+      }).join("") + '</div>';
+    if (!poster) cls.classList.add("no-poster");
+    var note = document.getElementById("class-note");
+    if (note) note.textContent = sess.length && !upcoming.length
+      ? "이번 부모교실은 끝났어요. 다음 일정은 인스타그램과 블로그에서 먼저 알려드려요."
+      : (sess.length ? "" : "다음 부모교실 일정은 인스타그램과 블로그에서 먼저 알려드려요.");
+    if (note) note.hidden = !note.textContent;
+  }
+})();
+
 (function () {
   // 모바일 탭 메뉴: 지금 보고 있는 칸 표시
   var links = Array.prototype.slice.call(document.querySelectorAll('nav a[href^="#"]'));

@@ -233,3 +233,9 @@ footer .muted{opacity:.75}
   .hero-cta .btn-line{color:#fff;border-color:#fff}
   .waves{height:60px}
 }
+
+/* 자동 갱신 행사: 지난 일정 흐리게 */
+.event.done{opacity:.6}
+.event .ended{font-family:var(--f-body);font-size:13px;color:var(--ink-soft);background:var(--sky);border-radius:999px;padding:1px 8px;vertical-align:middle}
+.events-wrap.no-poster{grid-template-columns:1fr}
+.promo .meta a{color:var(--sea-deep)}
