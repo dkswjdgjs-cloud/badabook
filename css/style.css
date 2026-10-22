@@ -42,7 +42,16 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1
 nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
 nav a{text-decoration:none;padding:6px 12px;border-radius:999px;font-family:var(--f-display);font-size:17px;color:var(--ink-soft)}
 nav a:hover{background:var(--paper);color:var(--ink)}
-@media (max-width:640px){nav{display:none}}
+@media (max-width:640px){
+  header .wrap{flex-direction:column;align-items:stretch;gap:6px;padding-block:10px 6px}
+  .logo{font-size:22px}.logo-mark{width:38px;height:38px}
+  nav{margin-inline:-4px}
+  nav ul{flex-wrap:nowrap;overflow-x:auto;gap:5px;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  nav ul::-webkit-scrollbar{display:none}
+  nav li{flex:none}
+  nav a{display:block;font-size:15px;padding:5px 11px;background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+}
+section[id]{scroll-margin-top:120px}
 
 /* 히어로 */
 .hero{padding-block:56px 0;position:relative}
