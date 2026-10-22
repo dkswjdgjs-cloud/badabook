@@ -18,10 +18,11 @@
   if (rail) {
     rail.innerHTML = D.publishers.map(function (p) {
       return '<a class="pub-card" style="--pc:' + p.color + '" href="publisher.html?p=' + p.id + '">' +
-        (p.logo ? '<span class="pc-logo"><img src="' + esc(p.logo) + '" alt="' + esc(p.name) + ' 로고"></span>' : '') +
+        '<span class="spine" aria-hidden="true"></span><span class="in">' +
+        (p.logo ? '<span class="pc-logo"><img src="' + esc(p.logo) + '" alt="' + esc(p.name) + ' 로고" style="width:' + (p.logoW || 140) + 'px"></span>' : '') +
         '<span class="pc-badge">' + esc(p.badge) + '</span>' +
-        '<div><h3>' + esc(p.name) + '</h3><p>' + esc(p.intro) + '</p></div>' +
-        '<span class="pc-go">책 ' + p.books.length + '종 보기 →</span></a>';
+        '<h3>' + esc(p.name) + '</h3><p>' + esc(p.intro) + '</p>' +
+        '<span class="pc-go">책 ' + p.books.length + '종 보기 →</span></span></a>';
     }).join("");
     var wrap = rail.parentNode;
     var fit = function () { wrap.classList.toggle("fits", rail.scrollWidth <= rail.clientWidth + 2); };
@@ -39,7 +40,7 @@
     pubRoot.innerHTML =
       '<div class="page-head"><div class="wrap">' +
       '<div class="crumb"><a href="index.html#books">출판사별 책 소개</a><span>›</span><span>' + esc(p.name) + '</span></div>' +
-      '<div class="page-title">' + (p.logo ? '<span class="pub-logo"><img src="' + esc(p.logo) + '" alt=""></span>' : '<span class="dot"></span>') + '<h1>' + esc(p.name) + '</h1></div>' +
+      '<div class="page-title">' + (p.logo ? '<span class="pub-logo"><img src="' + esc(p.logo) + '" alt="" style="width:' + Math.round((p.logoW || 140) * 0.75) + 'px"></span>' : '<span class="dot"></span>') + '<h1>' + esc(p.name) + '</h1></div>' +
       '<p class="page-lead">' + esc(p.intro) + '</p>' +
       (D.temporary ? '<p class="temp-note">책 목록은 준비 중이에요. 곧 전체 목록으로 바뀌어요.</p>' : '') +
       '</div></div>' +

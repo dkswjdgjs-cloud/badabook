@@ -143,13 +143,18 @@ footer .muted{opacity:.75}
 /* ===== 출판사 카드 (가로 넘기기) ===== */
 .pub-rail-wrap{position:relative}
 .pub-rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,calc((100% - 54px)/4));gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-block:4px 14px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
-.pub-card{scroll-snap-align:start;display:flex;flex-direction:column;justify-content:space-between;gap:16px;min-height:340px;padding:24px 22px;border-radius:var(--r);text-decoration:none;color:var(--on-accent);background:var(--pc);position:relative;overflow:hidden;transition:transform .15s}
-.pub-card:hover{transform:translateY(-4px)}
-.pub-card::after{content:"";position:absolute;right:-40px;bottom:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18)}
-.pub-card .pc-badge{align-self:flex-start;font-size:13px;padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.75);color:#17324D}
-.pub-card h3{font-size:30px;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.08)}
-.pub-card p{color:#fff;opacity:.95;font-size:15px}
-.pub-card .pc-go{font-family:var(--f-display);font-size:17px;color:#fff;position:relative;z-index:1}
+.pub-card{scroll-snap-align:start;display:grid;grid-template-columns:30px 1fr;min-height:340px;background:var(--paper);border-radius:6px 18px 18px 6px;text-decoration:none;color:var(--ink);box-shadow:4px 6px 0 color-mix(in srgb,var(--pc) 35%,transparent);transition:transform .15s,box-shadow .15s;margin-right:6px}
+.pub-card:hover{transform:translateY(-4px);box-shadow:4px 10px 0 color-mix(in srgb,var(--pc) 45%,transparent)}
+.pub-card .spine{background:var(--pc);border-radius:6px 0 0 6px;position:relative}
+.pub-card .spine::before,.pub-card .spine::after{content:"";position:absolute;left:0;right:0;height:3px;background:rgba(255,255,255,.55)}
+.pub-card .spine::before{top:22px}.pub-card .spine::after{bottom:22px}
+.pub-card .in{padding:22px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.pub-card .pc-logo{height:96px;display:flex;align-items:center;justify-content:center}
+.pub-card .pc-logo img{max-height:100%;max-width:100%;object-fit:contain;display:block}
+.pub-card .pc-badge{align-self:flex-start;font-size:13px;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,var(--pc) 16%,transparent);color:var(--ink)}
+.pub-card h3{font-size:23px;border-top:2px solid var(--pc);padding-top:12px}
+.pub-card p{color:var(--ink-soft);font-size:15px}
+.pub-card .pc-go{margin-top:auto;font-family:var(--f-display);color:var(--ink)}
 .rail-btn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);font-size:20px;cursor:pointer;display:grid;place-items:center;z-index:2}
 .rail-btn.prev{left:-14px}.rail-btn.next{right:-14px}
 .rail-hint{font-size:14px;color:var(--ink-soft);margin-top:4px}
@@ -195,8 +200,7 @@ footer .muted{opacity:.75}
 .pub-rail-wrap.fits .rail-btn{display:none}
 .rail-btn.prev{left:-22px}.rail-btn.next{right:-22px}
 .book-detail .cover.cover-ph{display:grid}
-.pub-card .pc-logo{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;height:96px;padding:10px 14px;position:relative;z-index:1}
-.pub-card .pc-logo img{max-height:100%;max-width:100%;object-fit:contain;display:block}
-.pub-card .pc-badge{position:relative;z-index:1}
-.pub-logo{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;height:64px;padding:8px 12px;border:3px solid var(--pc)}
+.pub-logo{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:4px 12px 12px 4px;height:64px;padding:8px 14px 8px 22px;border-left:12px solid var(--pc);box-shadow:3px 4px 0 color-mix(in srgb,var(--pc) 35%,transparent)}
 .pub-logo img{max-height:100%;max-width:160px;object-fit:contain;display:block}
+.pub-card .pc-logo img{max-height:none;height:auto;max-width:100%}
+.pub-logo img{max-height:none;height:auto;max-width:100%}
