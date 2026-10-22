@@ -3,6 +3,7 @@ img{max-width:100%}
 [hidden]{display:none!important}
 /* Layout: 바다 위에서 아래로 내려가는 한 장짜리 스크롤. 하늘(히어로) → 물결 → 이달의 소식 → 행사 → 매장 → 채널 → 바닥(푸터) */
 :root{
+  color-scheme:light;
   --sky:#EAF6F8;      /* 페이지 바탕: 맑은 바닷물빛 */
   --paper:#FFFFFF;    /* 카드 면 */
   --ink:#17324D;      /* 본문 글자: 깊은 바다 남색 */
@@ -19,12 +20,7 @@ img{max-width:100%}
   --f-body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
   --r:18px;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --sky:#0E2233;--paper:#16324A;--ink:#EAF4F8;--ink-soft:#A9C3D3;--sea:#5DB4E6;--sea-deep:#86C9EE;
-  --sun:#FFD15C;--coral:#FF8E7C;--kelp:#4CC3A7;--line:#24465F;--wave1:#173A52;--wave2:#1F4B68;--on-accent:#10263A;color-scheme:dark}}
-:root[data-theme="dark"]{
-  --sky:#0E2233;--paper:#16324A;--ink:#EAF4F8;--ink-soft:#A9C3D3;--sea:#5DB4E6;--sea-deep:#86C9EE;
-  --sun:#FFD15C;--coral:#FF8E7C;--kelp:#4CC3A7;--line:#24465F;--wave1:#173A52;--wave2:#1F4B68;--on-accent:#10263A;color-scheme:dark}
+
 
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
