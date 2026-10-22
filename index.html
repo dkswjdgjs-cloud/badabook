@@ -1,0 +1,315 @@
+<title>영종 책바다 어린이서점</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
+<style>
+/* Layout: 바다 위에서 아래로 내려가는 한 장짜리 스크롤. 하늘(히어로) → 물결 → 이달의 소식 → 행사 → 매장 → 채널 → 바닥(푸터) */
+:root{
+  --sky:#EAF6F8;      /* 페이지 바탕: 맑은 바닷물빛 */
+  --paper:#FFFFFF;    /* 카드 면 */
+  --ink:#17324D;      /* 본문 글자: 깊은 바다 남색 */
+  --ink-soft:#4C6A80;
+  --sea:#2A7FB8;      /* 주 강조: 파도 */
+  --sea-deep:#1D5F8F;
+  --sun:#FFC83D;      /* 햇살 노랑: 프로모션 */
+  --coral:#FF7A66;    /* 산호: 행사 */
+  --kelp:#2E9E86;     /* 해초: 매장 정보 */
+  --line:#CFE4EA;
+  --wave1:#BFE3EC; --wave2:#8FCBDD;
+  --on-accent:#17324D;
+  --f-display:"Jua","Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sky:#0E2233;--paper:#16324A;--ink:#EAF4F8;--ink-soft:#A9C3D3;--sea:#5DB4E6;--sea-deep:#86C9EE;
+  --sun:#FFD15C;--coral:#FF8E7C;--kelp:#4CC3A7;--line:#24465F;--wave1:#173A52;--wave2:#1F4B68;--on-accent:#10263A;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sky:#0E2233;--paper:#16324A;--ink:#EAF4F8;--ink-soft:#A9C3D3;--sea:#5DB4E6;--sea-deep:#86C9EE;
+  --sun:#FFD15C;--coral:#FF8E7C;--kelp:#4CC3A7;--line:#24465F;--wave1:#173A52;--wave2:#1F4B68;--on-accent:#10263A;color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--sky);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.7;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sky)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.25;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--sea);outline-offset:3px;border-radius:8px}
+.todo{background:color-mix(in srgb,var(--sun) 35%,transparent);border-radius:6px;padding:0 6px;font-size:.92em;white-space:nowrap}
+
+/* 헤더 */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--sky) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-size:26px;color:var(--sea-deep)}
+.logo-mark{width:44px;height:44px;border-radius:50%;flex:none;object-fit:cover;background:#fff;border:2px solid var(--line)}
+nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+nav a{text-decoration:none;padding:6px 12px;border-radius:999px;font-family:var(--f-display);font-size:17px;color:var(--ink-soft)}
+nav a:hover{background:var(--paper);color:var(--ink)}
+@media (max-width:640px){nav{display:none}}
+
+/* 히어로 */
+.hero{padding-block:56px 0;position:relative}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:center}
+.eyebrow{font-family:var(--f-display);color:var(--coral);font-size:18px;letter-spacing:.04em}
+.hero h1{font-size:clamp(40px,7vw,72px);color:var(--ink);margin-block:8px 16px}
+.hero h1 em{font-style:normal;color:var(--sea)}
+.hero p.lead{font-size:19px;color:var(--ink-soft);max-width:34em}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-display);font-size:18px;text-decoration:none;padding:12px 22px;border-radius:999px;border:2px solid var(--ink);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-sun{background:var(--sun);color:var(--on-accent);border-color:var(--sun)}
+.btn-line{background:transparent;color:var(--ink)}
+.hero-art{margin:0;background:var(--paper);padding:12px 12px 4px;border-radius:6px;box-shadow:0 10px 30px color-mix(in srgb,var(--ink) 18%,transparent);transform:rotate(2deg);max-width:100%}
+.hero-art img{display:block;width:100%;height:auto;border-radius:3px}
+.hero-art figcaption{font-family:var(--f-display);text-align:center;font-size:16px;color:var(--ink-soft);padding-block:8px}
+.waves{display:block;width:100%;height:90px;margin-top:24px}
+@media (max-width:760px){.hero .wrap{grid-template-columns:1fr}.hero-art{max-width:320px;margin:0 auto}}
+
+/* 섹션 공통 */
+section.band{padding-block:64px}
+.band-paper{background:var(--wave2)}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.sec-head h2{font-size:clamp(30px,4.5vw,42px)}
+.sec-head p{color:var(--ink-soft);max-width:30em}
+
+/* 프로모션 */
+.promo-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:18px}
+.promo{background:var(--paper);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.promo.main{background:var(--sun);color:var(--on-accent)}
+.promo.main .meta{color:var(--on-accent);opacity:.8}
+.promo .tag{align-self:flex-start;font-family:var(--f-display);font-size:14px;padding:2px 12px;border-radius:999px;background:var(--sky);color:var(--sea-deep)}
+.promo.main .tag{background:var(--paper);color:var(--on-accent)}
+.promo h3{font-size:24px}
+.promo-img{display:block;width:100%;height:auto;max-height:340px;object-fit:cover;object-position:top;border-radius:12px}
+.promo.main h3{font-size:30px}
+.promo .meta{font-size:15px;color:var(--ink-soft);margin-top:auto}
+@media (max-width:860px){.promo-grid{grid-template-columns:1fr 1fr}.promo.main{grid-column:1/-1}}
+@media (max-width:520px){.promo-grid{grid-template-columns:1fr}}
+
+/* 행사 */
+.events-wrap{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:24px;align-items:start}
+.poster{display:block;width:100%;height:auto;border-radius:var(--r)}
+@media (max-width:760px){.events-wrap{grid-template-columns:1fr}.poster{max-width:360px}}
+.events{display:grid;gap:12px;align-content:start;min-width:0}
+.event{display:grid;grid-template-columns:92px 1fr auto;gap:18px;align-items:center;background:var(--paper);border-radius:var(--r);padding:16px 20px}
+.date{text-align:center;font-family:var(--f-display);line-height:1.1;border-right:2px dashed var(--line);padding-right:14px}
+.date .m{font-size:14px;color:var(--coral)}
+.date .d{font-size:36px;color:var(--ink)}
+.date .w{font-size:14px;color:var(--ink-soft)}
+.event h3{font-size:21px}
+.event .info{color:var(--ink-soft);font-size:15px}
+.age{font-family:var(--f-display);font-size:15px;padding:4px 12px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--coral) 20%,transparent);color:var(--ink)}
+.age.kelp{background:color-mix(in srgb,var(--kelp) 22%,transparent)}
+.age.sea{background:color-mix(in srgb,var(--sea) 20%,transparent)}
+.note{margin-top:14px;font-size:14px;color:var(--ink-soft)}
+@media (max-width:600px){.event{grid-template-columns:72px 1fr}.event .age{grid-column:2;justify-self:start}.date .d{font-size:30px}}
+
+/* 매장 */
+.store{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ph{display:block;width:100%;height:auto;aspect-ratio:1/1;max-width:100%;object-fit:cover;border-radius:var(--r)}
+.ph.big{grid-column:1/-1;aspect-ratio:4/3;object-position:center 60%}
+.info-card{background:var(--paper);border-radius:var(--r);padding:24px;display:grid;gap:14px;align-content:start}
+.info-card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 18px}
+.info-card dt{font-family:var(--f-display);color:var(--kelp);white-space:nowrap}
+.info-card dd{margin:0;min-width:0}
+.hours{font-variant-numeric:tabular-nums}
+.shelf{display:flex;flex-wrap:wrap;gap:8px}
+.shelf span{font-size:14px;padding:4px 12px;border-radius:999px;border:1px solid var(--line)}
+@media (max-width:760px){.store{grid-template-columns:1fr}}
+
+/* 채널 */
+.channels{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ch{background:var(--paper);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:12px;text-decoration:none;border:2px solid transparent;transition:border-color .15s,transform .15s}
+.ch:hover{border-color:var(--ch);transform:translateY(-3px)}
+.ch-icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--ch);color:#fff;font-family:var(--f-display);font-size:24px}
+.ch h3{font-size:22px}
+.ch p{color:var(--ink-soft);font-size:15px}
+.ch .go{margin-top:auto;font-family:var(--f-display);color:var(--sea-deep)}
+.ch.naver{--ch:#03C75A}
+.ch.insta{--ch:#D6307A}
+.ch.kakao{--ch:#F5C400}
+.ch.kakao .ch-icon{color:#3A1D1D}
+@media (max-width:760px){.channels{grid-template-columns:1fr}}
+
+/* 푸터 */
+footer{background:var(--ink);color:var(--sky);padding-block:36px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
+footer strong{font-family:var(--f-display);font-weight:400;font-size:22px;display:block}
+footer .muted{opacity:.75}
+</style>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="책바다 처음으로">
+      <img class="logo-mark" src="images/logo.jpg" alt="" width="40" height="40">
+      책바다
+    </a>
+    <nav aria-label="주요 메뉴">
+      <ul>
+        <li><a href="#news">이벤트</a></li>
+        <li><a href="#events">부모교실</a></li>
+        <li><a href="#store">매장 안내</a></li>
+        <li><a href="#channels">소통 채널</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">영종 책바다 어린이서점</p>
+        <h1>책 속 바다로<br><em>풍덩!</em> 빠져 볼까요?</h1>
+        <p class="lead">영종도에서 그림책부터 전집까지, 아이 손에 꼭 맞는 책을 함께 고르는 어린이서점이에요. 그레이트북스 우수 매장이자 아람북스·프뢰벨·도서출판 성우 정품 등록 서점이라, 견본을 직접 펼쳐 보고 상담받을 수 있어요.</p>
+        <div class="hero-cta">
+          <a class="btn btn-sun" href="#news">10월 이벤트 보기</a>
+          <a class="btn btn-line" href="#store">오시는 길</a>
+        </div>
+      </div>
+      <figure class="hero-art">
+        <img src="images/entrance.jpg" alt="노란 유리문 입구와 곰 모양 책육아 갤러리 벽" width="1000" height="1000">
+        <figcaption>매장 입구의 곰 모양 '책육아 갤러리'</figcaption>
+      </figure>
+    </div>
+    <svg class="waves" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 40 Q150 0 300 40 T600 40 T900 40 T1200 40 V90 H0z" fill="var(--wave1)"/>
+      <path d="M0 60 Q150 25 300 60 T600 60 T900 60 T1200 60 V90 H0z" fill="var(--wave2)"/>
+    </svg>
+  </section>
+
+  <section class="band band-paper" id="news">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>10월 소식</h2>
+        <p>지금 매장에서 진행 중인 출판사 이벤트예요. 견본 도서가 매장에 있어 직접 보고 고르실 수 있어요.</p>
+      </div>
+      <div class="promo-grid">
+        <article class="promo main">
+          <img class="promo-img" src="images/promo-kkoma.jpg" alt="꼬마 생각 뒤집기 사전예약 포스터" width="800" height="1000">
+          <span class="tag">사전예약 · 10/31(토) 마감</span>
+          <h3>꼬마 생각 뒤집기<br>사전예약 특가 10% 할인</h3>
+          <p>전 40권, 5세 이상, 세이펜 호환. 사전예약하면 '꼬마 생각 일력'을 드리고 영상 이용 기간을 1년 연장해 총 3년 볼 수 있어요. 도서출판 성우 묶음 구매 시 소전집 2~4질을 함께 드려요.</p>
+          <p class="meta">사전예약 특가 396,000원 · 2026.10.01 ~ 10.31</p>
+        </article>
+        <article class="promo">
+          <img class="promo-img" src="images/promo-october.jpg" alt="10월 출판사별 구매 혜택 안내" width="900" height="1172">
+          <span class="tag">10월 출판사 이벤트</span>
+          <h3>구매 사은품 추가 증정</h3>
+          <p>놀라운 자연, 자연이올, 수학특공대, 호호랜드, 말하기 프로그램, 고사리삼국지를 구매하시면 사은품을 더 드려요.</p>
+          <p class="meta">자연이올 보드북 10권 + 양장 40권 매장 입고</p>
+        </article>
+        <article class="promo">
+          <span class="tag">결제 혜택</span>
+          <h3>인천e음 10% 캐시백</h3>
+          <p>천사지원금, 온누리상품권(디지털·지류), 상생페이백, 문화누리카드, 제로페이를 쓸 수 있어요. 비씨·농협·삼성카드는 3개월 무이자예요.</p>
+          <p class="meta">매장 방문이 어려우면 비대면 결제도 가능해요</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="events">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>부모교실</h2>
+        <p>매달 출판사 강사님을 모시고 아이 연령에 맞는 책 읽기 방법을 나눠요. 무료, 선착순이에요. 신청은 문자(010-7540-5490)로 받아요.</p>
+      </div>
+      <div class="events-wrap">
+      <img class="poster" src="images/parent-class.jpg" alt="10월 부모교실 일정 안내 포스터" width="800" height="1071">
+      <div class="events">
+        <article class="event">
+          <div class="date"><div class="m">10월</div><div class="d">14</div><div class="w">수 · 오전 10:30</div></div>
+          <div><h3>0~3세 첫 독서법</h3><p class="info">강사 윤나리 (그레이트북스) · 참석자 선물 증정</p></div>
+          <span class="age kelp">36개월 미만 자녀 부모</span>
+        </article>
+        <article class="event">
+          <div class="date"><div class="m">10월</div><div class="d">20</div><div class="w">화 · 오전 10:30</div></div>
+          <div><h3>생각근육 키우는 방법</h3><p class="info">강사 이도원 (도서출판 성우)</p></div>
+          <span class="age sea">5세 이상 자녀 부모</span>
+        </article>
+      </div>
+      </div>
+      <p class="note">10월 부모교실은 끝났어요. 11월 일정은 인스타그램과 블로그에서 먼저 알려드려요.</p>
+    </div>
+  </section>
+
+  <section class="band band-paper" id="store">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>매장 안내</h2>
+        <p>노란 유리문을 열면 곰 모양 '책육아 갤러리' 벽과 블록 놀이 테이블이 아이들을 맞아요. 전집 견본이 서가에 있어 펼쳐 보고 상담받을 수 있어요.</p>
+      </div>
+      <div class="store">
+        <div class="photos">
+          <img class="ph big" src="images/interior.jpg" alt="민트색 벽과 흰 서가, 기린 인형, 블록 놀이 테이블이 있는 매장 내부" width="600" height="780">
+          <img class="ph" src="images/shelf.jpg" alt="기린 인형 옆 그림책 서가 통로" width="336" height="628">
+          <img class="ph" src="images/entrance.jpg" alt="노란 유리문 매장 입구" width="1000" height="1000">
+        </div>
+        <div class="info-card">
+          <dl>
+            <dt>주소</dt><dd>인천 영종구 하늘중앙로 193, 조양타워 3층</dd>
+            <dt>영업시간</dt><dd class="hours">월~금 10:30 ~ 18:30<br>토 09:30 ~ 17:30<br>일요일 휴무</dd>
+            <dt>전화</dt><dd class="hours">032-751-5490<br>010-7540-5490 (문자 상담)</dd>
+            <dt>주차</dt><dd>주차 가능</dd>
+          </dl>
+          <div>
+            <p style="font-family:var(--f-display);color:var(--kelp);margin-bottom:8px">정품 등록 출판사</p>
+            <div class="shelf"><span>그레이트북스 우수 매장</span><span>아람북스</span><span>프뢰벨</span><span>도서출판 성우</span><span>키즈스콜레</span><span>키즈에이원</span></div>
+          </div>
+          <a class="btn btn-line" href="https://map.naver.com/p/search/%EC%98%81%EC%A2%85%20%EC%B1%85%EB%B0%94%EB%8B%A4%20%EC%96%B4%EB%A6%B0%EC%9D%B4%EC%84%9C%EC%A0%90" target="_blank" rel="noopener" style="justify-self:start">네이버 지도에서 길찾기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="channels">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>책바다와 이야기해요</h2>
+        <p>새로 들어온 책, 이벤트, 부모교실 소식은 아래 채널에서 가장 먼저 알려드려요.</p>
+      </div>
+      <div class="channels">
+        <a class="ch naver" href="https://blog.naver.com/badaikidsbook" target="_blank" rel="noopener">
+          <span class="ch-icon" aria-hidden="true">N</span>
+          <h3>네이버 블로그 · 플레이스</h3>
+          <p>책육아 가이드와 전집 소개 글을 블로그에 올려요. 네이버 플레이스에서 리뷰와 길찾기도 볼 수 있어요.</p>
+          <span class="go">블로그 보기 →</span>
+        </a>
+        <a class="ch insta" href="https://www.instagram.com/badakidsbook/" target="_blank" rel="noopener">
+          <span class="ch-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg>
+          </span>
+          <h3>인스타그램</h3>
+          <p>입고 소식, 이벤트, 부모교실 안내와 영종책바다 월간지를 올려요.</p>
+          <span class="go">@badakidsbook →</span>
+        </a>
+        <a class="ch kakao" href="https://pf.kakao.com/_FUjhxj" target="_blank" rel="noopener">
+          <span class="ch-icon" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 4C7 4 3 7.1 3 11c0 2.5 1.7 4.7 4.2 5.9L6.4 20l3.6-2.4c.6.1 1.3.2 2 .2 5 0 9-3.1 9-7s-4-7-9-6.8z" fill="#3A1D1D"/></svg>
+          </span>
+          <h3>카카오톡 채널</h3>
+          <p>전집 상담과 비대면 구매 문의를 1:1 채팅으로 받아요.</p>
+          <span class="go">채널 추가하기 →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <strong>영종 책바다 어린이서점</strong>
+      <span class="muted">인천 영종구 하늘중앙로 193, 조양타워 3층 · 032-751-5490</span>
+    </div>
+    <div class="muted">
+      온누리상품권 가맹점 · 홈페이지에서는 판매하지 않아요.<br>
+      © 2026 영종 책바다
+    </div>
+  </div>
+</footer>
