@@ -89,6 +89,23 @@ section.band{padding-block:64px}
 @media (max-width:860px){.promo-grid{grid-template-columns:1fr 1fr}.promo.main{grid-column:1/-1}}
 @media (max-width:520px){.promo-grid{grid-template-columns:1fr}}
 
+
+/* 출판사별 책 소개 */
+.pubs{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.pub{background:var(--paper);border-radius:var(--r);padding:22px 24px;display:grid;gap:12px;align-content:start;min-width:0;border-top:6px solid var(--pc)}
+.pub-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pub h3{font-size:24px}
+.pub .badge{font-size:13px;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,var(--pc) 18%,transparent);white-space:nowrap}
+.pub ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pub li{display:grid;gap:2px;padding-top:10px;border-top:1px dashed var(--line)}
+.pub li:first-child{border-top:0;padding-top:0}
+.pub li b{font-family:var(--f-display);font-weight:400;font-size:18px}
+.pub li span{font-size:15px;color:var(--ink-soft)}
+.pub.great{--pc:#E5484D}.pub.aram{--pc:#2FA8C9}.pub.sungwoo{--pc:#7C5CC4}.pub.froebel{--pc:#E8A317}
+.pubs-more{margin-top:18px;background:var(--paper);border-radius:var(--r);padding:18px 24px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.pubs-more b{font-family:var(--f-display);font-weight:400;font-size:18px}
+@media (max-width:760px){.pubs{grid-template-columns:1fr}}
+
 /* 행사 */
 .events-wrap{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:24px;align-items:start}
 .poster{display:block;width:100%;height:auto;border-radius:var(--r)}
@@ -151,6 +168,7 @@ footer .muted{opacity:.75}
     <nav aria-label="주요 메뉴">
       <ul>
         <li><a href="#news">이벤트</a></li>
+        <li><a href="#books">책 소개</a></li>
         <li><a href="#events">부모교실</a></li>
         <li><a href="#store">매장 안내</a></li>
         <li><a href="#channels">소통 채널</a></li>
@@ -213,7 +231,56 @@ footer .muted{opacity:.75}
     </div>
   </section>
 
-  <section class="band" id="events">
+  <section class="band" id="books">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>출판사별 책 소개</h2>
+        <p>정품 등록 서점이라 출판사 전집을 정가 그대로, 매장 혜택과 함께 구매하실 수 있어요. 견본 도서가 매장에 있으니 직접 펼쳐 보고 골라 주세요.</p>
+      </div>
+      <div class="pubs">
+        <article class="pub great">
+          <div class="pub-head"><h3>그레이트북스</h3><span class="badge">우수 매장</span></div>
+          <ul>
+            <li><b>베베랑마마랑</b><span>영아 첫 책. 10월 구매 시 애착인형과 첫걸음 북카트 증정</span></li>
+            <li><b>놀라운 자연</b><span>자연 관찰 전집. 10월 구매 시 원목 퍼즐과 어린이 동물도감 증정</span></li>
+            <li><b>부모교실</b><span>그레이트북스 교육국장과 함께하는 0~3세 첫 독서법 강의</span></li>
+          </ul>
+        </article>
+        <article class="pub aram">
+          <div class="pub-head"><h3>아람북스</h3><span class="badge">정품 등록</span></div>
+          <ul>
+            <li><b>자연이올</b><span>보드북 10권 + 양장 40권. 매장에 입고되어 있어요</span></li>
+            <li><b>수학특공대</b><span>구매 시 '쪼꼬는 논리짱'(8권) 증정</span></li>
+            <li><b>호호랜드</b><span>구매 시 퍼기콘 시리즈 작가의 매직펫 시리즈(7권) 증정</span></li>
+            <li><b>베이비올 · 플레이올 영어</b><span>구매 시 오감 자동차, 소리블록, 뮤직통통 중 하나 증정</span></li>
+          </ul>
+        </article>
+        <article class="pub sungwoo">
+          <div class="pub-head"><h3>도서출판 성우</h3><span class="badge">정품 등록</span></div>
+          <ul>
+            <li><b>꼬마 생각 뒤집기</b><span>전 40권, 애니메이션 40편, 세이펜 적용. 5세 이상. 10/31까지 사전예약</span></li>
+            <li><b>이야기꽃할망</b><span>옛이야기 전집. 매장에서 견본을 볼 수 있어요</span></li>
+            <li><b>묶음 구매 혜택</b><span>2질 동시 구매 시 소전집 2질, 3질 구매 시 소전집 3질 증정</span></li>
+          </ul>
+        </article>
+        <article class="pub froebel">
+          <div class="pub-head"><h3>프뢰벨</h3><span class="badge">정품 등록</span></div>
+          <ul>
+            <li><b>말하기 프로그램</b><span>아이 성장 테마 동화와 양면 놀이책 구성</span></li>
+            <li><b>엄마의 첫 선물</b><span>영아 첫 그림책 세트. 퍼즐 놀이 구성</span></li>
+            <li><b>고사리 삼국지</b><span>고사성어 카드와 함께 읽는 삼국지</span></li>
+          </ul>
+        </article>
+      </div>
+      <div class="pubs-more">
+        <b>그 밖의 정품 등록 출판사</b>
+        <span>키즈스콜레 · 키즈에이원</span>
+        <span style="color:var(--ink-soft);font-size:15px">구성과 가격은 매장이나 카카오 채널로 문의해 주세요.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-paper" id="events">
     <div class="wrap">
       <div class="sec-head">
         <h2>부모교실</h2>
@@ -238,7 +305,7 @@ footer .muted{opacity:.75}
     </div>
   </section>
 
-  <section class="band band-paper" id="store">
+  <section class="band" id="store">
     <div class="wrap">
       <div class="sec-head">
         <h2>매장 안내</h2>
@@ -267,7 +334,7 @@ footer .muted{opacity:.75}
     </div>
   </section>
 
-  <section class="band" id="channels">
+  <section class="band band-paper" id="channels">
     <div class="wrap">
       <div class="sec-head">
         <h2>책바다와 이야기해요</h2>
