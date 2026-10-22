@@ -195,3 +195,8 @@ footer .muted{opacity:.75}
 .pub-rail-wrap.fits .rail-btn{display:none}
 .rail-btn.prev{left:-22px}.rail-btn.next{right:-22px}
 .book-detail .cover.cover-ph{display:grid}
+.pub-card .pc-logo{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;height:96px;padding:10px 14px;position:relative;z-index:1}
+.pub-card .pc-logo img{max-height:100%;max-width:100%;object-fit:contain;display:block}
+.pub-card .pc-badge{position:relative;z-index:1}
+.pub-logo{display:flex;align-items:center;justify-content:center;background:#fff;border-radius:14px;height:64px;padding:8px 12px;border:3px solid var(--pc)}
+.pub-logo img{max-height:100%;max-width:160px;object-fit:contain;display:block}

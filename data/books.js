@@ -4,7 +4,7 @@ window.BOOKSHOP = {
   temporary: true, // 사장님 목록을 받으면 false로 바꾸기
   publishers: [
     {
-      id: "greatbooks", name: "그레이트북스", color: "#E5484D", badge: "우수 매장",
+      id: "greatbooks", logo: "images/publishers/greatbooks.png", name: "그레이트북스", color: "#E5484D", badge: "우수 매장",
       intro: "영아부터 초등까지 단계별 전집. 책바다는 그레이트북스 우수 매장이에요.",
       books: [
         { id: "bebe-mama", title: "베베랑마마랑", age: "0~3세", summary: "아기와 엄마가 함께 보는 첫 책",
@@ -16,7 +16,7 @@ window.BOOKSHOP = {
       ]
     },
     {
-      id: "arambooks", name: "아람북스", color: "#2FA8C9", badge: "정품 등록",
+      id: "arambooks", logo: "images/publishers/arambooks.png", name: "아람북스", color: "#2FA8C9", badge: "정품 등록",
       intro: "자연·수학·생활 동화까지 다양한 아람북스 전집을 매장에서 볼 수 있어요.",
       books: [
         { id: "jayeoniol", title: "자연이올", age: "유아", summary: "보드북 10권 + 양장 40권",
@@ -31,7 +31,7 @@ window.BOOKSHOP = {
       ]
     },
     {
-      id: "froebel", name: "프뢰벨", color: "#E8A317", badge: "정품 등록",
+      id: "froebel", logo: "images/publishers/froebel.png", name: "프뢰벨", color: "#E8A317", badge: "정품 등록",
       intro: "어린이를 위한 바른 교육, 프뢰벨 전집과 놀이 교구.",
       books: [
         { id: "speaking", title: "말하기 프로그램", age: "유아", summary: "아이 성장 테마 동화 + 양면 놀이책" },
@@ -40,7 +40,7 @@ window.BOOKSHOP = {
       ]
     },
     {
-      id: "sungwoo", name: "도서출판 성우", color: "#7C5CC4", badge: "정품 등록",
+      id: "sungwoo", logo: "images/publishers/sungwoo.png", name: "도서출판 성우", color: "#7C5CC4", badge: "정품 등록",
       intro: "생각하는 힘을 키우는 성우 전집. 묶음 구매 시 소전집을 함께 드려요.",
       books: [
         { id: "kkoma", title: "꼬마 생각 뒤집기", age: "5세 이상", summary: "전 40권 · 애니메이션 40편 · 세이펜",
