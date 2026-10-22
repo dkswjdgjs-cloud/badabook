@@ -1,3 +1,30 @@
+// 처음 열 때는 항상 맨 위에서 시작 (브라우저가 이전 위치나 #주소로 내려가지 않게)
+(function () {
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  var go = location.hash && document.referrer.indexOf(location.host) > -1 && /index\.html|\/$/.test(location.pathname) ? location.hash : "";
+  if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+  var html = document.documentElement;
+  var top = function () { html.style.scrollBehavior = "auto"; window.scrollTo(0, 0); html.style.scrollBehavior = ""; };
+  var land = function () {
+    var t = go && document.querySelector(go);
+    if (t) t.scrollIntoView(); else top();
+  };
+  var moved = false;
+  ["touchstart", "wheel", "keydown"].forEach(function (ev) { window.addEventListener(ev, function () { moved = true; }, { once: true, passive: true }); });
+  land();
+  window.addEventListener("load", function () { if (!moved) land(); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted) top(); });
+  // 메뉴를 눌러도 주소창에 #이 남지 않게
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var t = document.querySelector(a.getAttribute("href"));
+    if (!t) return;
+    e.preventDefault();
+    t.scrollIntoView({ behavior: "smooth" });
+  });
+})();
+
 // 이벤트·부모교실: data/events.js 를 읽어 그림 (인스타 자동 동기화가 이 파일을 매일 고침)
 (function () {
   var E = window.EVENTS, grid = document.getElementById("promo-grid"), cls = document.getElementById("class-wrap");
