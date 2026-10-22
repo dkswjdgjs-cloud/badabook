@@ -11,9 +11,9 @@
 <link rel="icon" href="images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
-<link rel="stylesheet" href="css/style.css?v=202610221258">
-<script src="data/books.js?v=202610221258" defer></script>
-<script src="js/site.js?v=202610221258" defer></script>
+<link rel="stylesheet" href="css/style.css?v=202610221304">
+<script src="data/books.js?v=202610221304" defer></script>
+<script src="js/site.js?v=202610221304" defer></script>
 </head>
 <body>
 <header>
@@ -22,6 +22,7 @@
       <img class="logo-mark" src="images/logo.jpg" alt="" width="40" height="40">
       영종책바다
     </a>
+    <a class="hdr-call" href="tel:0327515490" aria-label="전화 걸기 032-751-5490">☎ 전화</a>
     <nav aria-label="주요 메뉴">
       <ul>
         <li><a href="#news">이벤트</a></li>
@@ -37,17 +38,21 @@
 <main id="top">
   <section class="hero">
     <div class="wrap">
-      <div>
+      <div class="hero-text">
         <p class="eyebrow">영종 책바다 어린이서점</p>
         <h1>책 속 바다로<br><em>풍덩!</em> 빠져 볼까요?</h1>
         <p class="lead">영종도에서 그림책부터 전집까지, 아이 손에 꼭 맞는 책을 함께 고르는 어린이서점이에요. 그레이트북스 우수 매장이자 아람북스·프뢰벨·도서출판 성우 정품 등록 서점이라, 견본을 직접 펼쳐 보고 상담받을 수 있어요.</p>
+        <p class="lead-short">그림책부터 전집까지, 견본을 직접 펼쳐 보고 고를 수 있어요.</p>
         <div class="hero-cta">
           <a class="btn btn-sun" href="#news">10월 이벤트 보기</a>
           <a class="btn btn-line" href="#store">오시는 길</a>
         </div>
       </div>
       <figure class="hero-art">
-        <img src="images/entrance.jpg" alt="노란 유리문 입구와 곰 모양 책육아 갤러리 벽" width="1000" height="1000">
+        <picture>
+          <source media="(max-width:640px)" srcset="images/interior.jpg">
+          <img src="images/entrance.jpg" alt="영종책바다 매장 모습" width="1000" height="1000">
+        </picture>
         <figcaption>매장 입구의 곰 모양 '책육아 갤러리'</figcaption>
       </figure>
     </div>

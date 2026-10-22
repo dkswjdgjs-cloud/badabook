@@ -1,4 +1,11 @@
 (function () {
+  // 모바일 탭 메뉴: 지금 보고 있는 칸 표시
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav a[href^="#"]'));
+  if (links.length && "IntersectionObserver" in window) {
+    var mark = function (id) { links.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + id); }); };
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) mark(e.target.id); }); }, { rootMargin: "-45% 0px -50% 0px" });
+    links.forEach(function (a) { var t = document.querySelector(a.getAttribute("href")); if (t) io.observe(t); });
+  }
   var D = window.BOOKSHOP; if (!D) return;
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function q(k) { return new URLSearchParams(location.search).get(k); }
