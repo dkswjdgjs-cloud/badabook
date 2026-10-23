@@ -13,10 +13,10 @@
 <link rel="icon" href="images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
-<link rel="stylesheet" href="css/style.css?v=202610230850">
-<script src="data/books.js?v=202610230850" defer></script>
-<script src="data/events.js" defer></script>
-<script src="js/site.js?v=202610230850" defer></script>
+<link rel="stylesheet" href="css/style.css?v=202610231000">
+<script src="data/books.js?v=202610231000" defer></script>
+<script src="data/events.js?v=202610231000" defer></script>
+<script src="js/site.js?v=202610231000" defer></script>
 </head>
 <body>
 <header>
@@ -39,25 +39,30 @@
 </header>
 
 <main id="top">
-  <section class="hero">
-    <div class="wrap">
-      <div class="hero-text">
+  <section class="top">
+    <div class="wrap top-grid">
+      <div class="greet">
         <p class="eyebrow">영종 책바다 어린이서점</p>
         <h1>책 속 바다로<br><em>풍덩!</em> 빠져 볼까요?</h1>
-        <p class="lead">영종도에서 그림책부터 전집까지, 아이 손에 꼭 맞는 책을 함께 고르는 어린이서점이에요. 그레이트북스 우수 매장이자 아람북스·프뢰벨·도서출판 성우 정품 등록 서점이라, 견본을 직접 펼쳐 보고 상담받을 수 있어요.</p>
-        <p class="lead-short">그림책부터 전집까지, 견본을 직접 펼쳐 보고 고를 수 있어요.</p>
-        <div class="hero-cta">
-          <a class="btn btn-sun" href="#news">10월 이벤트 보기</a>
-          <a class="btn btn-line" href="#store">오시는 길</a>
-        </div>
+        <span class="open-now" id="open-now">영업시간 확인 중</span>
+        <p class="addr">하늘중앙로 193 조양타워 3층 · 주차 가능 · <a href="tel:0327515490">032-751-5490</a></p>
       </div>
-      <figure class="hero-art">
-        <picture>
-          <source media="(max-width:640px)" srcset="images/interior.jpg">
-          <img src="images/entrance.jpg" alt="영종책바다 매장 모습" width="1000" height="1000">
-        </picture>
-        <figcaption>매장 입구의 곰 모양 '책육아 갤러리'</figcaption>
-      </figure>
+      <div class="tiles">
+        <a class="tile t-sun" href="#news"><span class="ic" aria-hidden="true">🎁</span>이달 행사<small id="tile-news">진행 중인 행사 보기</small></a>
+        <a class="tile t-paper" href="#books"><span class="ic" aria-hidden="true">📚</span>책 소개<small>출판사별 전집 보기</small></a>
+        <a class="tile t-coral" href="#events"><span class="ic" aria-hidden="true">👩‍👧</span>부모교실<small id="tile-class">무료 · 문자 신청</small></a>
+        <a class="tile t-kelp" href="#store"><span class="ic" aria-hidden="true">📍</span>오시는 길<small>조양타워 3층 · 주차</small></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ban-sec" id="ban-sec" hidden>
+    <div class="wrap">
+      <h2 class="ban-title">이달의 행사</h2>
+      <div class="ban-wrap">
+        <div class="ban" id="ban" tabindex="0" aria-label="이달의 행사, 옆으로 넘겨 보세요"></div>
+        <div class="ban-nav"><button class="ban-prev" type="button" aria-label="이전 행사">‹</button><span class="ban-dots" id="ban-dots"></span><button class="ban-next" type="button" aria-label="다음 행사">›</button></div>
+      </div>
     </div>
     <svg class="waves" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0 40 Q150 0 300 40 T600 40 T900 40 T1200 40 V90 H0z" fill="var(--wave1)"/>
@@ -164,6 +169,11 @@
     </div>
   </section>
 </main>
+
+<div class="fab" aria-label="바로 문의">
+  <a class="fab-kakao" href="https://pf.kakao.com/_FUjhxj/chat" target="_blank" rel="noopener"><b aria-hidden="true">💬</b>카톡상담</a>
+  <a class="fab-tel" href="tel:0327515490"><b aria-hidden="true">☎</b>전화</a>
+</div>
 
 <footer>
   <div class="wrap">
