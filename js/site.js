@@ -1,15 +1,3 @@
-// 첫 화면 영업 중 표시 (월~금 10:30~18:30, 토 09:30~17:30, 일 휴무)
-(function () {
-  var el = document.getElementById("open-now"); if (!el) return;
-  var H = { 1: [630, 1110], 2: [630, 1110], 3: [630, 1110], 4: [630, 1110], 5: [630, 1110], 6: [570, 1050] };
-  var k = new Date(Date.now() + (new Date().getTimezoneOffset() + 540) * 60000); // 한국 시간
-  var m = k.getHours() * 60 + k.getMinutes(), h = H[k.getDay()];
-  var t = function (x) { return Math.floor(x / 60) + ":" + ("0" + (x % 60)).slice(-2); };
-  if (h && m >= h[0] && m < h[1]) { el.textContent = "지금 영업 중 · " + t(h[1]) + "까지"; el.classList.add("on"); return; }
-  if (h && m < h[0]) { el.textContent = "오늘 " + t(h[0]) + " 문 열어요"; return; }
-  for (var i = 1; i <= 7; i++) { var d = (k.getDay() + i) % 7; if (H[d]) { el.textContent = "영업 종료 · " + (i === 1 ? "내일" : ["일", "월", "화", "수", "목", "금", "토"][d] + "요일") + " " + t(H[d][0]) + " 오픈"; return; } }
-})();
-
 // 처음 열 때는 항상 맨 위에서 시작 (브라우저가 이전 위치나 #주소로 내려가지 않게)
 (function () {
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -84,7 +72,6 @@
           '<div class="date"><div class="m">' + (d.getMonth() + 1) + '월</div><div class="d">' + d.getDate() + '</div><div class="w">' + W[d.getDay()] + (s.time ? " · " + esc(s.time) : "") + '</div></div>' +
           '<div><h3>' + esc(s.title) + (done ? ' <small class="ended">종료</small>' : "") + '</h3>' + (s.info ? '<p class="info">' + esc(s.info) + '</p>' : "") + '</div>' +
           (s.target ? '<span class="age ' + colors[i % 3] + '">' + esc(s.target) + '</span>' : "") +
-          (done ? "" : '<a class="apply" href="sms:01075405490?&body=' + encodeURIComponent("[부모교실 신청] " + (d.getMonth() + 1) + "/" + d.getDate() + " " + s.title + " / 이름: / 아이 나이: ") + '">✉ 문자로 신청</a>') +
           '</article>';
       }).join("") + '</div>';
     if (!poster) cls.classList.add("no-poster");
@@ -93,48 +80,6 @@
       ? "이번 부모교실은 끝났어요. 다음 일정은 인스타그램과 블로그에서 먼저 알려드려요."
       : (sess.length ? "" : "다음 부모교실 일정은 인스타그램과 블로그에서 먼저 알려드려요.");
     if (note) note.hidden = !note.textContent;
-    var next = sess.filter(function (s) { return s.date >= today; })[0];
-    var tc = document.getElementById("tile-class");
-    if (tc && next) { var nd = new Date(next.date + "T00:00:00"); tc.textContent = "다음 " + (nd.getMonth() + 1) + "/" + nd.getDate() + "(" + W[nd.getDay()] + ")"; }
-  }
-
-  // 첫 화면 행사 배너
-  var ban = document.getElementById("ban");
-  if (ban) {
-    var Wd = ["일", "월", "화", "수", "목", "금", "토"];
-    var slides = items.filter(function (it) { return it.kind === "promo" && it.image && !it.always && it.end && it.end >= today; })
-      .sort(function (a, b) { return (b.featured ? 1 : 0) - (a.featured ? 1 : 0); })
-      .map(function (it) { return { img: it.image, tag: it.tag, title: it.title, body: it.body, meta: it.meta, href: "#news" }; });
-    items.forEach(function (it) {
-      if (it.kind !== "class" || !it.image || !it.sessions) return;
-      var up = it.sessions.filter(function (s) { return s.date >= today; });
-      if (!up.length) return;
-      slides.push({ img: it.image, tag: "부모교실 · 무료", title: it.title, body: up.map(function (s) { var d = new Date(s.date + "T00:00:00"); return (d.getMonth() + 1) + "/" + d.getDate() + "(" + Wd[d.getDay()] + ") " + s.title; }).join(" · "), meta: "문자로 신청 010-7540-5490", href: "#events" });
-    });
-    var tn = document.getElementById("tile-news"); if (tn && slides.length) tn.textContent = slides.length + "개 진행 중";
-    if (slides.length) {
-      document.getElementById("ban-sec").hidden = false;
-      ban.innerHTML = slides.map(function (x, i) {
-        return '<a class="slide" href="' + x.href + '" aria-label="' + (i + 1) + ' / ' + slides.length + '">' +
-          '<span class="s-img"><img src="' + esc(x.img) + '" alt="' + esc(x.title) + '"' + (i ? ' loading="lazy"' : "") + '></span>' +
-          '<span class="s-cap">' + (x.tag ? '<span class="tag">' + esc(x.tag) + '</span>' : "") + '<b class="s-title">' + esc(x.title) + '</b>' +
-          (x.body ? '<span class="s-body">' + esc(x.body) + '</span>' : "") + (x.meta ? '<span class="s-meta">' + esc(x.meta) + '</span>' : "") +
-          '<span class="s-more">자세히 보기 →</span></span></a>';
-      }).join("");
-      var dots = document.getElementById("ban-dots");
-      dots.innerHTML = slides.map(function () { return "<i></i>"; }).join("");
-      var cur = 0, timer;
-      var mark = function () { Array.prototype.forEach.call(dots.children, function (d, i) { d.classList.toggle("on", i === cur); }); };
-      var go = function (i) { cur = (i + slides.length) % slides.length; ban.scrollTo({ left: ban.clientWidth * cur, behavior: "smooth" }); mark(); };
-      ban.addEventListener("scroll", function () { var i = Math.round(ban.scrollLeft / ban.clientWidth); if (i !== cur) { cur = i; mark(); } }, { passive: true });
-      document.querySelector(".ban-prev").addEventListener("click", function () { go(cur - 1); });
-      document.querySelector(".ban-next").addEventListener("click", function () { go(cur + 1); });
-      var play = function () { clearInterval(timer); if (slides.length > 1) timer = setInterval(function () { go(cur + 1); }, 6000); };
-      ["touchstart", "mouseenter", "focusin"].forEach(function (ev) { ban.addEventListener(ev, function () { clearInterval(timer); }, { passive: true }); });
-      ban.addEventListener("mouseleave", play);
-      if (slides.length < 2) document.querySelector(".ban-nav").hidden = true;
-      mark(); play();
-    }
   }
 })();
 
