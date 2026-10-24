@@ -25,7 +25,7 @@
   });
 })();
 
-// 이벤트·부모교실: data/events.js 를 읽어 그림 (인스타 자동 동기화가 이 파일을 매일 고침)
+// 이벤트·부모교실: data/events.js 를 읽어 그림 (블로그 자동 동기화가 이 파일을 매일 고침)
 (function () {
   var E = window.EVENTS, grid = document.getElementById("promo-grid"), cls = document.getElementById("class-wrap");
   if (!E || (!grid && !cls)) return;
@@ -43,15 +43,17 @@
     }).sort(function (a, b) {
       return (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.always ? 1 : 0) - (b.always ? 1 : 0) || String(b.posted || b.start).localeCompare(String(a.posted || a.start));
     });
+    var BLOG = "https://blog.naver.com/badaikidsbook";
     grid.innerHTML = live.map(function (it, i) {
-      return '<article class="promo' + (i === 0 && !it.always ? " main" : "") + '">' +
+      var href = it.link || BLOG, where = /instagram\.com/.test(href) ? "인스타그램" : "블로그";
+      return '<a class="promo' + (i === 0 && !it.always ? " main" : "") + '" href="' + esc(href) + '" target="_blank" rel="noopener">' +
         (it.image ? '<img class="promo-img" src="' + esc(it.image) + '" alt="' + esc(it.title) + '" loading="lazy">' : "") +
         (it.tag ? '<span class="tag">' + esc(it.tag) + '</span>' : "") +
         '<h3>' + esc(it.title) + '</h3>' +
         (it.body ? '<p>' + esc(it.body) + '</p>' : "") +
         (it.meta ? '<p class="meta">' + esc(it.meta) + '</p>' : "") +
-        (it.link ? '<p class="meta"><a href="' + esc(it.link) + '" target="_blank" rel="noopener">인스타그램에서 자세히 보기 →</a></p>' : "") +
-        '</article>';
+        '<span class="more">' + where + (it.link ? "에서 자세히 보기 →" : " 가기 →") + '</span>' +
+        '</a>';
     }).join("");
     var empty = document.getElementById("promo-empty"); if (empty) empty.hidden = live.some(function (it) { return !it.always; });
   }
@@ -61,11 +63,13 @@
     var groups = items.filter(function (it) { return it.kind === "class" && it.sessions && it.sessions.length; });
     var upcoming = groups.filter(function (g) { return g.sessions.some(function (s) { return s.date >= today; }); });
     var pick = upcoming.length ? upcoming : groups.slice().sort(function (a, b) { return b.sessions[b.sessions.length - 1].date.localeCompare(a.sessions[a.sessions.length - 1].date); }).slice(0, 1);
-    var sess = [], poster = "";
-    pick.forEach(function (g) { if (!poster && g.image) poster = g.image; g.sessions.forEach(function (s) { sess.push(s); }); });
+    var sess = [], poster = "", plink = "";
+    pick.forEach(function (g) { if (!poster && g.image) poster = g.image; if (!plink && g.link) plink = g.link; g.sessions.forEach(function (s) { sess.push(s); }); });
     sess.sort(function (a, b) { return a.date.localeCompare(b.date); });
     var colors = ["kelp", "sea", ""];
-    cls.innerHTML = (poster ? '<img class="poster" src="' + esc(poster) + '" alt="부모교실 일정 안내 포스터" loading="lazy">' : "") +
+    var pimg = poster ? '<img class="poster" src="' + esc(poster) + '" alt="부모교실 일정 안내 포스터" loading="lazy">' : "";
+    if (pimg && plink) pimg = '<a class="poster-link" href="' + esc(plink) + '" target="_blank" rel="noopener" title="블로그에서 자세히 보기">' + pimg + '</a>';
+    cls.innerHTML = pimg +
       '<div class="events">' + sess.map(function (s, i) {
         var d = new Date(s.date + "T00:00:00"), done = s.date < today;
         return '<article class="event' + (done ? " done" : "") + '">' +

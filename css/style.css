@@ -239,3 +239,11 @@ footer .muted{opacity:.75}
 .event .ended{font-family:var(--f-body);font-size:13px;color:var(--ink-soft);background:var(--sky);border-radius:999px;padding:1px 8px;vertical-align:middle}
 .events-wrap.no-poster{grid-template-columns:1fr}
 .promo .meta a{color:var(--sea-deep)}
+
+/* 행사 카드 전체가 블로그 글 링크 */
+a.promo{color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 22px rgba(20,60,100,.14)}
+.promo .more{font-family:var(--f-display);font-size:15px;color:var(--sea-deep);margin-top:auto}
+.promo .meta~.more{margin-top:0}
+.promo.main .more{color:var(--on-accent)}
+.poster-link{display:block}

@@ -13,7 +13,7 @@ window.EVENTS = {
       "image": "images/promo-kkoma.jpg",
       "start": "2026-10-01",
       "end": "2026-10-31",
-      "link": ""
+      "link": "https://blog.naver.com/badaikidsbook/224428026781"
     },
     {
       "id": "manual-october",
@@ -40,7 +40,7 @@ window.EVENTS = {
       "image": "",
       "start": "",
       "end": "",
-      "link": ""
+      "link": "https://blog.naver.com/badaikidsbook/224416259331"
     },
     {
       "id": "manual-class-2026-10",

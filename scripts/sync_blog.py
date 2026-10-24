@@ -309,6 +309,9 @@ def main() -> int:
         dup = duplicate_of(item, ev["items"])
         if dup:
             print(f"  이미 있는 카드({dup})와 같은 행사라 건너뜀")
+            for o in ev["items"]:
+                if o["id"] == dup and not o.get("link"):
+                    o["link"] = p["link"]  # 직접 넣은 카드도 누르면 이 블로그 글로 가게
             if img:
                 (ROOT / img).unlink(missing_ok=True)
             changed = True  # 읽은 글 목록은 저장
