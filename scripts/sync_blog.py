@@ -33,7 +33,7 @@ IMG_DIR = ROOT / "images" / "events"
 PREFIX = "window.EVENTS = "
 KST = dt.timezone(dt.timedelta(hours=9))
 LOOKBACK_DAYS = 60  # 이보다 오래된 글은 보지 않음
-MAX_IMAGES = 4  # 글 하나에서 제미나이에게 보여줄 사진 수
+MAX_IMAGES = 3  # 글 하나에서 제미나이에게 보여줄 사진 수
 MAX_POSTS = 8  # 한 번에 분석할 최대 글 수 (나머지는 다음 날)
 BLOG_ID = os.environ.get("NAVER_BLOG_ID") or "badaikidsbook"
 UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
@@ -166,30 +166,59 @@ class QuotaError(Exception):
 def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
     parts = [{"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(j).decode()}} for j in jpegs]
     parts.append({"text": f"게시일: {posted}\n\n블로그 글:\n{caption or '(글 없음)'}"})
-    body = json.dumps({
-        "system_instruction": {"parts": [{"text": SYSTEM}]},
-        "contents": [{"role": "user", "parts": parts}],
-        "generationConfig": {"responseMimeType": "application/json", "responseSchema": SCHEMA, "temperature": 0.2},
-    }).encode()
+    cfg = {"responseMimeType": "application/json", "responseSchema": SCHEMA, "temperature": 0.2,
+           "thinkingConfig": {"thinkingLevel": "low"}}  # 생각을 짧게 해서 빨리 답하게
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
     for attempt in range(3):
+        body = json.dumps({
+            "system_instruction": {"parts": [{"text": SYSTEM}]},
+            "contents": [{"role": "user", "parts": parts}],
+            "generationConfig": cfg,
+        }).encode()
         req = urllib.request.Request(url, data=body, method="POST",
                                      headers={"Content-Type": "application/json", "x-goog-api-key": key})
         try:
-            with urllib.request.urlopen(req, timeout=90) as r:
+            with urllib.request.urlopen(req, timeout=180) as r:
                 out = json.load(r)
             break
         except urllib.error.HTTPError as e:
             msg = e.read()[:400].decode("utf-8", "replace")
             print(f"  제미나이 응답 {e.code}: {msg}", flush=True)
+            if e.code == 400 and "thinking" in msg.lower() and "thinkingConfig" in cfg and attempt < 2:
+                cfg = {k: v for k, v in cfg.items() if k != "thinkingConfig"}  # 이 모델이 설정을 모르면 빼고 다시
+                continue
             if e.code in (500, 503) and attempt < 2:  # 일시 오류면 잠깐 쉬고 다시
                 time.sleep(20)
                 continue
             if e.code == 429:
                 raise QuotaError(msg)
             raise RuntimeError(f"제미나이 오류 {e.code}")
+        except (TimeoutError, OSError) as e:
+            print(f"  제미나이 응답 늦음 ({e})", flush=True)
+            if attempt < 1:
+                continue
+            raise
     text = "".join(p.get("text", "") for p in out["candidates"][0]["content"]["parts"])
     return Post.model_validate_json(text)
+
+
+COMMON = {"이벤트", "사전예약", "할인", "증정", "특가", "행사", "구매", "사은품", "신간", "영종책바다", "어린이서점"}
+
+
+def words(t: str) -> set:
+    return {w for w in re.findall(r"[가-힣A-Za-z0-9]{2,}", t or "") if w not in COMMON and not re.fullmatch(r"\d+월?", w)}
+
+
+def duplicate_of(item: dict, items: list) -> str:
+    """이미 있는 카드(직접 넣은 카드 포함)와 같은 행사면 그 카드 id."""
+    a = words(item["title"])
+    for o in items:
+        if o["id"] == item["id"] or o.get("kind") != item["kind"]:
+            continue
+        same_time = (o.get("start"), o.get("end")) == (item["start"], item["end"]) or not (o.get("end") or item["end"])
+        if same_time and len(a & words(o.get("title", ""))) >= 2:
+            return o["id"]
+    return ""
 
 
 def load_events() -> dict:
@@ -240,7 +269,7 @@ def main() -> int:
                     raws.append(fetch(u, referer="https://m.blog.naver.com/"))
                 except Exception as e:
                     print(f"  사진 하나 못 받음: {e}")
-            jpegs = [to_jpeg(r, 1200) for r in raws]
+            jpegs = [to_jpeg(r, 1024) for r in raws]
             post = analyze(key, f"제목: {p['title']}\n\n{text}", posted, jpegs)
             time.sleep(5)  # 무료 한도(분당 요청 수) 여유
         except QuotaError:
@@ -277,6 +306,13 @@ def main() -> int:
             item["sessions"] = [s.model_dump() for s in post.sessions]
             if item["sessions"]:
                 item["end"] = item["end"] or max(s["date"] for s in item["sessions"])
+        dup = duplicate_of(item, ev["items"])
+        if dup:
+            print(f"  이미 있는 카드({dup})와 같은 행사라 건너뜀")
+            if img:
+                (ROOT / img).unlink(missing_ok=True)
+            changed = True  # 읽은 글 목록은 저장
+            continue
         ev["items"] = [i for i in ev["items"] if i["id"] != item["id"]] + [item]
         print(f"  추가: [{post.kind}] {post.title}")
         changed = True
