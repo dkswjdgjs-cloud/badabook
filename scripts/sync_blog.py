@@ -34,6 +34,7 @@ PREFIX = "window.EVENTS = "
 KST = dt.timezone(dt.timedelta(hours=9))
 LOOKBACK_DAYS = 60  # 이보다 오래된 글은 보지 않음
 MAX_IMAGES = 4  # 글 하나에서 제미나이에게 보여줄 사진 수
+MAX_POSTS = 8  # 한 번에 분석할 최대 글 수 (나머지는 다음 날)
 BLOG_ID = os.environ.get("NAVER_BLOG_ID") or "badaikidsbook"
 UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
 
@@ -158,6 +159,10 @@ SCHEMA = {
 }
 
 
+class QuotaError(Exception):
+    """무료 한도 초과: 오늘은 여기까지 하고 내일 이어서."""
+
+
 def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
     parts = [{"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(j).decode()}} for j in jpegs]
     parts.append({"text": f"게시일: {posted}\n\n블로그 글:\n{caption or '(글 없음)'}"})
@@ -167,18 +172,22 @@ def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
         "generationConfig": {"responseMimeType": "application/json", "responseSchema": SCHEMA, "temperature": 0.2},
     }).encode()
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-    for attempt in range(4):
+    for attempt in range(3):
         req = urllib.request.Request(url, data=body, method="POST",
                                      headers={"Content-Type": "application/json", "x-goog-api-key": key})
         try:
-            with urllib.request.urlopen(req, timeout=120) as r:
+            with urllib.request.urlopen(req, timeout=90) as r:
                 out = json.load(r)
             break
         except urllib.error.HTTPError as e:
-            if e.code in (429, 500, 503) and attempt < 3:  # 무료 한도·일시 오류면 잠깐 쉬고 다시
-                time.sleep(30 * (attempt + 1))
+            msg = e.read()[:400].decode("utf-8", "replace")
+            print(f"  제미나이 응답 {e.code}: {msg}", flush=True)
+            if e.code in (500, 503) and attempt < 2:  # 일시 오류면 잠깐 쉬고 다시
+                time.sleep(20)
                 continue
-            raise RuntimeError(f"제미나이 오류 {e.code}: {e.read()[:300]!r}")
+            if e.code == 429:
+                raise QuotaError(msg)
+            raise RuntimeError(f"제미나이 오류 {e.code}")
     text = "".join(p.get("text", "") for p in out["candidates"][0]["content"]["parts"])
     return Post.model_validate_json(text)
 
@@ -219,6 +228,7 @@ def main() -> int:
     print(f"블로그 최근 글 {len(posts)}개 중 새 글 {len(new)}개")
 
     changed = False
+    new = sorted(new, key=lambda x: x["date"], reverse=True)[:MAX_POSTS]  # 최근 글부터
     for p in sorted(new, key=lambda x: x["date"]):  # 오래된 것부터
         posted = p["date"].isoformat()
         print(f"- {posted} {p['title']} {p['link']}")
@@ -233,6 +243,9 @@ def main() -> int:
             jpegs = [to_jpeg(r, 1200) for r in raws]
             post = analyze(key, f"제목: {p['title']}\n\n{text}", posted, jpegs)
             time.sleep(5)  # 무료 한도(분당 요청 수) 여유
+        except QuotaError:
+            print("::warning::제미나이 무료 한도에 걸렸어요. 남은 글은 다음 실행 때 이어서 해요.")
+            break
         except Exception as e:
             print(f"::warning::글 처리 실패 ({e}): 내일 다시 시도해요.")
             continue
