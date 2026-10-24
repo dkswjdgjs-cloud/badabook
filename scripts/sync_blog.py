@@ -1,22 +1,26 @@
-"""인스타그램 새 게시물을 읽어 홈페이지 행사 데이터(data/events.js)를 갱신한다.
+"""네이버 블로그 새 글을 읽어 홈페이지 행사 데이터(data/events.js)를 갱신한다.
 
-GitHub Actions가 매일 실행한다. 필요한 비밀값:
-  IG_ACCESS_TOKEN    인스타그램 장기 토큰 (Instagram API with Instagram Login)
-  GEMINI_API_KEY     제미나이 API 키 (aistudio.google.com, 무료)
-선택: GEMINI_MODEL 변수 (기본값 gemini-flash-latest)
+로그인 없이 공개 RSS(rss.blog.naver.com/<아이디>.xml)를 읽는다. GitHub Actions가 매일 실행한다.
+필요한 비밀값: GEMINI_API_KEY (aistudio.google.com, 무료)
+선택 변수: GEMINI_MODEL (기본 gemini-flash-latest), NAVER_BLOG_ID (기본 badaikidsbook)
 """
 
 import base64
 import datetime as dt
+import email.utils
+import html
 import io
 import json
 import os
 import pathlib
+import re
 import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
+from html.parser import HTMLParser
 from typing import List, Literal
 
 from PIL import Image
@@ -24,13 +28,63 @@ from pydantic import BaseModel
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data" / "events.js"
-STATE = ROOT / "data" / "instagram-state.json"
+STATE = ROOT / "data" / "blog-state.json"
 IMG_DIR = ROOT / "images" / "events"
 PREFIX = "window.EVENTS = "
-GRAPH = "https://graph.instagram.com"
 KST = dt.timezone(dt.timedelta(hours=9))
-LOOKBACK_DAYS = 60  # 이보다 오래된 게시물은 보지 않음
-MAX_IMAGES = 4  # 캐러셀에서 제미나이에게 보여줄 사진 수
+LOOKBACK_DAYS = 60  # 이보다 오래된 글은 보지 않음
+MAX_IMAGES = 4  # 글 하나에서 제미나이에게 보여줄 사진 수
+BLOG_ID = os.environ.get("NAVER_BLOG_ID") or "badaikidsbook"
+UA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+
+
+def fetch(url: str, referer: str = "") -> bytes:
+    h = {"User-Agent": UA}
+    if referer:
+        h["Referer"] = referer
+    with urllib.request.urlopen(urllib.request.Request(url, headers=h), timeout=60) as r:
+        return r.read()
+
+
+class _Text(HTMLParser):
+    """블로그 본문에서 글자만 뽑는다."""
+
+    def __init__(self):
+        super().__init__()
+        self.out, self.skip = [], 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style"):
+            self.skip += 1
+        if tag in ("p", "br", "div", "li", "tr"):
+            self.out.append("\n")
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style") and self.skip:
+            self.skip -= 1
+
+    def handle_data(self, data):
+        if not self.skip:
+            self.out.append(data)
+
+
+def post_content(log_no: str) -> tuple[str, List[str]]:
+    """모바일 블로그 글에서 본문 글자와 사진 주소를 가져온다."""
+    url = f"https://m.blog.naver.com/{BLOG_ID}/{log_no}"
+    page = fetch(url).decode("utf-8", "replace")
+    i = page.find("se-main-container")
+    body = page[page.find(">", i) + 1:] if i > -1 else page
+    j = body.find("post_footer")
+    body = body[:j] if j > -1 else body
+    imgs = []
+    for u in re.findall(r'(?:data-lazy-src|src)="(https://(?:mblogthumb|postfiles|blogfiles)-phinf\.pstatic\.net/[^"]+)"', body):
+        u = html.unescape(u).split("?")[0] + "?type=w966"
+        if u not in imgs and not re.search(r"(sticker|emoticon|static/)", u):
+            imgs.append(u)
+    p = _Text()
+    p.feed(body)
+    text = re.sub(r"\n\s*\n+", "\n", html.unescape("".join(p.out))).strip()
+    return text[:6000], imgs[:MAX_IMAGES]
 
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-flash-latest"
@@ -57,7 +111,7 @@ class Post(BaseModel):
 
 
 SYSTEM = """너는 인천 영종도의 어린이 서점 '영종 책바다 어린이서점'의 홈페이지 담당자야.
-서점 인스타그램 게시물(사진 + 글)을 보고, 홈페이지 '이번 달 소식'이나 '부모교실' 칸에 올릴 내용인지 판단해서 정리해.
+서점 네이버 블로그 글(사진 + 글)을 보고, 홈페이지 '이번 달 소식'이나 '부모교실' 칸에 올릴 내용인지 판단해서 정리해.
 
 kind 고르는 법:
 - promo: 기간이 있는 할인, 사전예약, 사은품, 출판사 이벤트, 신간 입고 행사, 결제 혜택 등 손님이 와서 혜택을 받을 수 있는 소식.
@@ -74,46 +128,6 @@ kind 고르는 법:
 - sessions: class일 때만 채우고 나머지는 빈 목록. date는 YYYY-MM-DD.
 - 사진과 글에 없는 내용은 지어내지 마. 모르는 칸은 ""로 둬.
 - other이면 나머지 칸은 비워도 돼."""
-
-
-def http_json(url: str) -> dict:
-    with urllib.request.urlopen(url, timeout=30) as r:
-        return json.load(r)
-
-
-def http_bytes(url: str) -> bytes:
-    with urllib.request.urlopen(url, timeout=60) as r:
-        return r.read()
-
-
-def ig(path: str, token: str, **params) -> dict:
-    params["access_token"] = token
-    return http_json(f"{GRAPH}/{path}?{urllib.parse.urlencode(params)}")
-
-
-def refresh_token(token: str) -> None:
-    """장기 토큰은 60일 뒤 만료된다. 매일 갱신해서 만료를 계속 미룬다."""
-    try:
-        r = http_json(
-            f"{GRAPH}/refresh_access_token?grant_type=ig_refresh_token&access_token={urllib.parse.quote(token)}"
-        )
-        days = int(r.get("expires_in", 0)) // 86400
-        print(f"토큰 갱신됨 (남은 기간 약 {days}일)")
-        if r.get("access_token") and r["access_token"] != token:
-            print("::warning::새 토큰 문자열이 발급됐어요. 저장소 비밀값 IG_ACCESS_TOKEN을 새 값으로 바꿔야 해요.")
-    except Exception as e:  # 갱신 실패해도 오늘 작업은 계속
-        print(f"::warning::토큰 갱신 실패: {e}")
-
-
-def media_images(m: dict, token: str) -> List[str]:
-    if m.get("media_type") == "CAROUSEL_ALBUM":
-        kids = ig(f"{m['id']}/children", token, fields="media_type,media_url,thumbnail_url").get("data", [])
-        urls = [k.get("thumbnail_url") if k.get("media_type") == "VIDEO" else k.get("media_url") for k in kids]
-    elif m.get("media_type") == "VIDEO":
-        urls = [m.get("thumbnail_url")]
-    else:
-        urls = [m.get("media_url")]
-    return [u for u in urls if u][:MAX_IMAGES]
 
 
 def to_jpeg(raw: bytes, width: int) -> bytes:
@@ -146,7 +160,7 @@ SCHEMA = {
 
 def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
     parts = [{"inline_data": {"mime_type": "image/jpeg", "data": base64.b64encode(j).decode()}} for j in jpegs]
-    parts.append({"text": f"게시일: {posted}\n\n게시물 글:\n{caption or '(글 없음)'}"})
+    parts.append({"text": f"게시일: {posted}\n\n블로그 글:\n{caption or '(글 없음)'}"})
     body = json.dumps({
         "system_instruction": {"parts": [{"text": SYSTEM}]},
         "contents": [{"role": "user", "parts": parts}],
@@ -178,12 +192,12 @@ def save_events(ev: dict) -> None:
     DATA.write_text(PREFIX + json.dumps(ev, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8")
 
 
+
 def main() -> int:
-    token = os.environ.get("IG_ACCESS_TOKEN")
-    if not token:
-        print("::error::IG_ACCESS_TOKEN 비밀값이 없어요.")
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        print("::error::GEMINI_API_KEY 비밀값이 없어요.")
         return 1
-    refresh_token(token)
 
     state = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {"seen": []}
     seen = set(state["seen"])
@@ -191,40 +205,50 @@ def main() -> int:
     today = dt.datetime.now(KST).date()
     cutoff = today - dt.timedelta(days=LOOKBACK_DAYS)
 
-    media = ig(
-        "me/media", token, fields="id,caption,media_type,media_url,thumbnail_url,permalink,timestamp", limit=25
-    ).get("data", [])
-    new = [m for m in media if m["id"] not in seen and dt.date.fromisoformat(m["timestamp"][:10]) >= cutoff]
-    print(f"최근 게시물 {len(media)}개 중 새 게시물 {len(new)}개")
+    rss = ET.fromstring(fetch(f"https://rss.blog.naver.com/{BLOG_ID}.xml"))
+    posts = []
+    for it in rss.iter("item"):
+        link = (it.findtext("link") or "").strip()
+        m = re.search(r"/(\d{9,})", link)
+        if not m:
+            continue
+        when = email.utils.parsedate_to_datetime(it.findtext("pubDate")).astimezone(KST).date()
+        posts.append({"id": m.group(1), "title": (it.findtext("title") or "").strip(), "date": when,
+                      "link": f"https://blog.naver.com/{BLOG_ID}/{m.group(1)}"})
+    new = [p for p in posts if p["id"] not in seen and p["date"] >= cutoff]
+    print(f"블로그 최근 글 {len(posts)}개 중 새 글 {len(new)}개")
 
-    key = os.environ.get("GEMINI_API_KEY")
-    if not key:
-        print("::error::GEMINI_API_KEY 비밀값이 없어요.")
-        return 1
     changed = False
-    for m in reversed(new):  # 오래된 것부터
-        posted = dt.datetime.fromisoformat(m["timestamp"].replace("+0000", "+00:00")).astimezone(KST).date().isoformat()
-        print(f"- {posted} {m.get('permalink')}")
+    for p in sorted(new, key=lambda x: x["date"]):  # 오래된 것부터
+        posted = p["date"].isoformat()
+        print(f"- {posted} {p['title']} {p['link']}")
         try:
-            raws = [http_bytes(u) for u in media_images(m, token)]
-            post = analyze(key, m.get("caption", ""), posted, [to_jpeg(r, 1200) for r in raws])
+            text, urls = post_content(p["id"])
+            raws = []
+            for u in urls:
+                try:
+                    raws.append(fetch(u, referer="https://m.blog.naver.com/"))
+                except Exception as e:
+                    print(f"  사진 하나 못 받음: {e}")
+            jpegs = [to_jpeg(r, 1200) for r in raws]
+            post = analyze(key, f"제목: {p['title']}\n\n{text}", posted, jpegs)
             time.sleep(5)  # 무료 한도(분당 요청 수) 여유
         except Exception as e:
-            print(f"::warning::게시물 처리 실패 ({e}): 내일 다시 시도해요.")
+            print(f"::warning::글 처리 실패 ({e}): 내일 다시 시도해요.")
             continue
-        seen.add(m["id"])
+        seen.add(p["id"])
         if post.kind == "other":
             print("  행사 글 아님")
             continue
         img = ""
         if raws:
             IMG_DIR.mkdir(parents=True, exist_ok=True)
-            p = IMG_DIR / f"{m['id']}.jpg"
-            p.write_bytes(to_jpeg(raws[0], 900))
-            img = p.relative_to(ROOT).as_posix()
+            f = IMG_DIR / f"blog-{p['id']}.jpg"
+            f.write_bytes(to_jpeg(raws[0], 900))
+            img = f.relative_to(ROOT).as_posix()
         item = {
-            "id": f"ig-{m['id']}",
-            "source": "instagram",
+            "id": f"blog-{p['id']}",
+            "source": "blog",
             "kind": post.kind,
             "tag": post.tag,
             "title": post.title,
@@ -234,7 +258,7 @@ def main() -> int:
             "start": post.start,
             "end": post.end,
             "posted": posted,
-            "link": m.get("permalink", ""),
+            "link": p["link"],
         }
         if post.kind == "class":
             item["sessions"] = [s.model_dump() for s in post.sessions]
@@ -249,7 +273,7 @@ def main() -> int:
     before = len(ev["items"])
     ev["items"] = [
         i for i in ev["items"]
-        if i.get("source") != "instagram" or (i.get("end") or i.get("posted", "")) >= keep_after
+        if i.get("source") == "manual" or (i.get("end") or i.get("posted", "")) >= keep_after
     ]
     changed = changed or len(ev["items"]) != before
 
