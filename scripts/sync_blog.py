@@ -209,14 +209,36 @@ def words(t: str) -> set:
     return {w for w in re.findall(r"[가-힣A-Za-z0-9]{2,}", t or "") if w not in COMMON and not re.fullmatch(r"\d+월?", w)}
 
 
+def _range(it: dict):
+    st = it.get("start") or it.get("posted") or ""
+    en = it.get("end") or ""
+    if not en and st:
+        en = (dt.date.fromisoformat(st) + dt.timedelta(days=30)).isoformat()
+    return st, en
+
+
+def _hits(words_of: set, text: str) -> int:
+    flat = re.sub(r"\s+", "", text or "")
+    return sum(1 for w in words_of if w in flat)
+
+
 def duplicate_of(item: dict, items: list) -> str:
     """이미 있는 카드(직접 넣은 카드 포함)와 같은 행사면 그 카드 id."""
-    a = words(item["title"])
     for o in items:
         if o["id"] == item["id"] or o.get("kind") != item["kind"]:
             continue
-        same_time = (o.get("start"), o.get("end")) == (item["start"], item["end"]) or not (o.get("end") or item["end"])
-        if same_time and len(a & words(o.get("title", ""))) >= 2:
+        if item["kind"] == "class":
+            a = {x["date"] for x in item.get("sessions") or []}
+            b = {x["date"] for x in o.get("sessions") or []}
+            if a & b:
+                return o["id"]
+            continue
+        s1, e1 = _range(item)
+        s2, e2 = _range(o)
+        overlap = o.get("always") or not (s1 and s2) or (s1 <= e2 and s2 <= e1)
+        # 띄어쓰기가 달라도 잡히게: 한쪽 제목의 낱말이 다른 쪽 제목(공백 제거)에 2개 이상 들어 있으면 같은 행사
+        same = max(_hits(words(item["title"]), o.get("title", "")), _hits(words(o.get("title", "")), item["title"])) >= 2
+        if overlap and same:
             return o["id"]
     return ""
 
