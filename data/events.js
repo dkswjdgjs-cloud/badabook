@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "items": [
     {
       "id": "manual-kkoma",
@@ -65,6 +65,20 @@ window.EVENTS = {
         }
       ],
       "link": ""
+    },
+    {
+      "id": "blog-224397104796",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "출판사 이벤트 · 9/30(수) 마감",
+      "title": "도서출판 성우 9월 구매 혜택",
+      "body": "도서출판 성우 전집을 2질 구매하면 소전집 2질, 3질 구매하면 소전집 3질을 드려요. 영종 책바다 어린이서점만의 사은품과 자체 책육아 가이드북 혜택도 함께 받으실 수 있어요.",
+      "meta": "2질 구매 시 소전집 2질, 3질 구매 시 소전집 3질 증정",
+      "image": "images/events/blog-224397104796.jpg",
+      "start": "2026-09-01",
+      "end": "2026-09-30",
+      "posted": "2026-09-01",
+      "link": "https://blog.naver.com/badaikidsbook/224397104796"
     }
   ]
 };
