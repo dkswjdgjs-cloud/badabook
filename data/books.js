@@ -54,7 +54,7 @@ window.BOOKSHOP = {
       ]
     },
     {
-      id: "kidsschole", name: "키즈스콜레", color: "#3BAA5C", badge: "정품 등록",
+      id: "kidsschole", logo: "images/publishers/kidsschole.png", logoW: 170, name: "키즈스콜레", color: "#4FB3A9", badge: "정품 등록",
       intro: "첫 지식그림책부터 자연관찰, 역사까지. 키즈스콜레 전집을 매장에서 볼 수 있어요.",
       books: [
         { id: "myfirstworld", title: "마이퍼스트월드", age: "유아", summary: "첫 지식그림책 · 책바다 워크북 증정" },
@@ -65,7 +65,7 @@ window.BOOKSHOP = {
       ]
     },
     {
-      id: "moongchi", name: "뭉치북스", color: "#3E6FD8", badge: "취급 출판사",
+      id: "moongchi", logo: "images/publishers/moongchi.png", logoW: 84, name: "뭉치북스", color: "#3E6FD8", badge: "취급 출판사",
       intro: "토론하며 배우는 초등 과학 전집 〈과학토론왕〉을 만날 수 있어요.",
       books: [
         { id: "science-debate", title: "과학토론왕", age: "초등", summary: "토론으로 배우는 과학 전집" }
