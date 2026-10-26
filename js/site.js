@@ -1,14 +1,25 @@
 // 가로 넘기기 줄(출판사·이달 소식): 화살표 버튼, 다 보이면 버튼·안내 숨김
 function railButtons(rail, hint) {
-  var wrap = rail.parentNode;
-  var fit = function () {
-    var fits = rail.scrollWidth <= rail.clientWidth + 2;
-    wrap.classList.toggle("fits", fits);
-    if (hint) hint.hidden = fits;
+  var wrap = rail.parentNode, prev = wrap.querySelector(".prev"), next = wrap.querySelector(".next");
+  var update = function () {
+    var max = rail.scrollWidth - rail.clientWidth;
+    wrap.classList.toggle("fits", max <= 2);
+    if (hint) hint.hidden = max <= 2;
+    prev.disabled = rail.scrollLeft <= 2;          // 맨 앞이면 왼쪽 화살표 흐리게
+    next.disabled = rail.scrollLeft >= max - 2;    // 맨 끝이면 오른쪽 화살표 흐리게
   };
-  fit(); window.addEventListener("resize", fit);
-  wrap.querySelector(".prev").addEventListener("click", function () { rail.scrollBy({ left: -rail.clientWidth * 0.8, behavior: "smooth" }); });
-  wrap.querySelector(".next").addEventListener("click", function () { rail.scrollBy({ left: rail.clientWidth * 0.8, behavior: "smooth" }); });
+  update();
+  window.addEventListener("resize", update);
+  rail.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("load", update);
+  var step = function (dir) {
+    var card = rail.firstElementChild, gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+    var w = card ? card.getBoundingClientRect().width + gap : rail.clientWidth * 0.8;
+    var n = Math.max(1, Math.floor((rail.clientWidth + gap) / w)); // 한 화면에 보이는 카드 수만큼 넘김
+    rail.scrollBy({ left: dir * w * n, behavior: "smooth" });
+  };
+  prev.addEventListener("click", function () { step(-1); });
+  next.addEventListener("click", function () { step(1); });
 }
 
 // 처음 열 때는 항상 맨 위에서 시작 (브라우저가 이전 위치나 #주소로 내려가지 않게)

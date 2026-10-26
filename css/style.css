@@ -257,3 +257,13 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 
 /* 로고 이미지가 없는 출판사: 이름을 로고처럼 */
 .pub-card .pc-logo-text{font-family:var(--f-display);font-size:30px;color:var(--pc);text-align:center;line-height:1.2}
+
+/* 가로 넘기기: 아래 스크롤바 없이 PC는 화살표, 터치 기기는 손가락으로 밀기 */
+.pub-rail,.promo-grid{scrollbar-width:none;-ms-overflow-style:none;padding-block:4px 10px}
+.pub-rail::-webkit-scrollbar,.promo-grid::-webkit-scrollbar{display:none}
+.rail-btn:disabled{opacity:0;pointer-events:none}
+.rail-btn{transition:opacity .2s,background .15s}
+.rail-btn:hover{background:var(--sky)}
+@media (hover:hover) and (pointer:fine){.rail-hint{display:none}}
+@media (hover:hover) and (pointer:fine){.pub-rail-wrap:not(.fits) .rail-btn{display:grid}}
+@media (max-width:1100px){.rail-btn.prev{left:4px}.rail-btn.next{right:4px}}
