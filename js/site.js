@@ -33,7 +33,9 @@ function railButtons(rail, hint) {
   var html = document.documentElement;
   var top = function () { html.style.scrollBehavior = "auto"; window.scrollTo(0, 0); html.style.scrollBehavior = ""; };
   // 섹션 제목이 머리 메뉴 바로 아래 오도록 이동 (카드 아래까지 한 화면에 더 보이게)
+  var TIGHT = { news: 1, channels: 1 }; // 이 섹션만 제목을 메뉴 바로 아래로, 나머지는 예전 위치
   var goTo = function (t, smooth) {
+    if (!TIGHT[t.id]) { if (!smooth) html.style.scrollBehavior = "auto"; t.scrollIntoView({ behavior: smooth ? "smooth" : "auto" }); if (!smooth) html.style.scrollBehavior = ""; return; }
     var head = document.querySelector("header"), title = t.querySelector("h2") || t;
     var y = title.getBoundingClientRect().top + window.pageYOffset - (head ? head.offsetHeight : 0) - 20;
     if (!smooth) html.style.scrollBehavior = "auto";
