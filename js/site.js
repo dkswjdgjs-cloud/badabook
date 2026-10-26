@@ -129,7 +129,7 @@ function railButtons(rail, hint) {
     rail.innerHTML = D.publishers.map(function (p) {
       return '<a class="pub-card" style="--pc:' + p.color + '" href="publisher.html?p=' + p.id + '">' +
         '<span class="spine" aria-hidden="true"></span><span class="in">' +
-        (p.logo ? '<span class="pc-logo"><img src="' + esc(p.logo) + '" alt="' + esc(p.name) + ' 로고" style="width:' + (p.logoW || 140) + 'px"></span>' : '') +
+        (p.logo ? '<span class="pc-logo"><img src="' + esc(p.logo) + '" alt="' + esc(p.name) + ' 로고" style="width:' + (p.logoW || 140) + 'px"></span>' : '<span class="pc-logo pc-logo-text">' + esc(p.name) + '</span>') +
         '<span class="pc-badge">' + esc(p.badge) + '</span>' +
         '<h3>' + esc(p.name) + '</h3><p>' + esc(p.intro) + '</p>' +
         '<span class="pc-go">책 ' + p.books.length + '종 보기 →</span></span></a>';

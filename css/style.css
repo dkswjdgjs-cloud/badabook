@@ -254,3 +254,6 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 .promo-grid .promo.main{grid-column:auto}
 @media (max-width:860px){.promo-grid{grid-template-columns:none;grid-auto-columns:calc((100% - 18px)/2)}}
 @media (max-width:640px){.promo-grid{grid-auto-columns:84%}}
+
+/* 로고 이미지가 없는 출판사: 이름을 로고처럼 */
+.pub-card .pc-logo-text{font-family:var(--f-display);font-size:30px;color:var(--pc);text-align:center;line-height:1.2}

@@ -52,7 +52,25 @@ window.BOOKSHOP = {
         { id: "iyagikkot", title: "이야기꽃할망", age: "유아", summary: "옛이야기 전집",
           desc: "옛이야기를 담은 전집이에요. 매장에서 견본을 볼 수 있어요." }
       ]
+    },
+    {
+      id: "kidsschole", name: "키즈스콜레", color: "#3BAA5C", badge: "정품 등록",
+      intro: "첫 지식그림책부터 자연관찰, 역사까지. 키즈스콜레 전집을 매장에서 볼 수 있어요.",
+      books: [
+        { id: "myfirstworld", title: "마이퍼스트월드", age: "유아", summary: "첫 지식그림책 · 책바다 워크북 증정" },
+        { id: "yaho-nature", title: "야호 자연아", age: "유아", summary: "자연관찰 전집 (라이트 버전도 있어요)" },
+        { id: "safari", title: "사파리 똑똑 모두누리", age: "유아", summary: "증간 개정판" },
+        { id: "first-history", title: "첫 역사그림책 세계사", age: "유아", summary: "그림책으로 시작하는 세계사" },
+        { id: "brainpick", title: "브레인픽", age: "유아", summary: "브레인픽 1 · 2" }
+      ]
+    },
+    {
+      id: "moongchi", name: "뭉치북스", color: "#3E6FD8", badge: "취급 출판사",
+      intro: "토론하며 배우는 초등 과학 전집 〈과학토론왕〉을 만날 수 있어요.",
+      books: [
+        { id: "science-debate", title: "과학토론왕", age: "초등", summary: "토론으로 배우는 과학 전집" }
+      ]
     }
   ],
-  more: "키즈스콜레 · 키즈에이원도 정품 등록 출판사예요. 구성과 가격은 매장이나 카카오 채널로 문의해 주세요."
+  more: "키즈에이원도 정품 등록 출판사예요. 구성과 가격은 매장이나 카카오 채널로 문의해 주세요."
 };
