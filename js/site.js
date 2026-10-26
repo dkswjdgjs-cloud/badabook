@@ -1,3 +1,16 @@
+// 가로 넘기기 줄(출판사·이달 소식): 화살표 버튼, 다 보이면 버튼·안내 숨김
+function railButtons(rail, hint) {
+  var wrap = rail.parentNode;
+  var fit = function () {
+    var fits = rail.scrollWidth <= rail.clientWidth + 2;
+    wrap.classList.toggle("fits", fits);
+    if (hint) hint.hidden = fits;
+  };
+  fit(); window.addEventListener("resize", fit);
+  wrap.querySelector(".prev").addEventListener("click", function () { rail.scrollBy({ left: -rail.clientWidth * 0.8, behavior: "smooth" }); });
+  wrap.querySelector(".next").addEventListener("click", function () { rail.scrollBy({ left: rail.clientWidth * 0.8, behavior: "smooth" }); });
+}
+
 // 처음 열 때는 항상 맨 위에서 시작 (브라우저가 이전 위치나 #주소로 내려가지 않게)
 (function () {
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -55,6 +68,7 @@
         '<span class="more">' + where + (it.link ? "에서 자세히 보기 →" : " 가기 →") + '</span>' +
         '</a>';
     }).join("");
+    railButtons(grid, document.getElementById("promo-hint"));
     var empty = document.getElementById("promo-empty"); if (empty) empty.hidden = live.some(function (it) { return !it.always; });
   }
 
@@ -120,11 +134,7 @@
         '<h3>' + esc(p.name) + '</h3><p>' + esc(p.intro) + '</p>' +
         '<span class="pc-go">책 ' + p.books.length + '종 보기 →</span></span></a>';
     }).join("");
-    var wrap = rail.parentNode;
-    var fit = function () { wrap.classList.toggle("fits", rail.scrollWidth <= rail.clientWidth + 2); };
-    fit(); window.addEventListener("resize", fit);
-    wrap.querySelector(".prev").addEventListener("click", function () { rail.scrollBy({ left: -rail.clientWidth * 0.8, behavior: "smooth" }); });
-    wrap.querySelector(".next").addEventListener("click", function () { rail.scrollBy({ left: rail.clientWidth * 0.8, behavior: "smooth" }); });
+    railButtons(rail);
   }
 
   // 출판사 페이지: 책 목록

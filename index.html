@@ -13,10 +13,10 @@
 <link rel="icon" href="images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
-<link rel="stylesheet" href="css/style.css?v=202610242050">
-<script src="data/books.js?v=202610242050" defer></script>
+<link rel="stylesheet" href="css/style.css?v=202610261420">
+<script src="data/books.js?v=202610261420" defer></script>
 <script src="data/events.js" defer></script>
-<script src="js/site.js?v=202610242050" defer></script>
+<script src="js/site.js?v=202610261420" defer></script>
 </head>
 <body>
 <header>
@@ -71,8 +71,13 @@
         <h2 id="news-title">이번 달 소식</h2>
         <p>지금 매장에서 진행 중인 출판사 이벤트예요. 견본 도서가 매장에 있어 직접 보고 고르실 수 있어요.</p>
       </div>
-      <div class="promo-grid" id="promo-grid"></div>
-      <p class="note" id="promo-empty" hidden>지금은 진행 중인 행사가 없어요. 새 소식은 인스타그램에서 먼저 알려드려요.</p>
+      <div class="pub-rail-wrap promo-rail-wrap">
+        <button class="rail-btn prev" type="button" aria-label="이전 소식">‹</button>
+        <div class="promo-grid" id="promo-grid" tabindex="0" aria-label="이달 소식, 옆으로 넘겨 보세요"></div>
+        <button class="rail-btn next" type="button" aria-label="다음 소식">›</button>
+      </div>
+      <p class="rail-hint" id="promo-hint">옆으로 넘겨서 다른 소식도 보세요.</p>
+      <p class="note" id="promo-empty" hidden>지금은 진행 중인 행사가 없어요. 새 소식은 블로그와 인스타그램에서 먼저 알려드려요.</p>
     </div>
   </section>
 

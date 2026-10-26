@@ -247,3 +247,10 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 .promo .meta~.more{margin-top:0}
 .promo.main .more{color:var(--on-accent)}
 .poster-link{display:block}
+
+/* 이달 소식: 한 줄로 두고 옆으로 넘기기 (출판사 줄과 같은 방식) */
+.promo-grid{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:calc((100% - 36px)/3);gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding-block:4px 14px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.promo-grid .promo{scroll-snap-align:start}
+.promo-grid .promo.main{grid-column:auto}
+@media (max-width:860px){.promo-grid{grid-template-columns:none;grid-auto-columns:calc((100% - 18px)/2)}}
+@media (max-width:640px){.promo-grid{grid-auto-columns:84%}}
