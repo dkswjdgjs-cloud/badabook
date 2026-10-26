@@ -267,3 +267,12 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 @media (hover:hover) and (pointer:fine){.rail-hint{display:none}}
 @media (hover:hover) and (pointer:fine){.pub-rail-wrap:not(.fits) .rail-btn{display:grid}}
 @media (max-width:1100px){.rail-btn.prev{left:4px}.rail-btn.next{right:4px}}
+
+/* 화살표 버튼: 흰 원 + 부드러운 그림자, 올리면 남색으로 */
+.rail-btn{width:48px;height:48px;border:0;background:rgba(255,255,255,.96);color:var(--sea-deep);
+  box-shadow:0 6px 18px rgba(16,52,86,.16),0 1px 3px rgba(16,52,86,.12);backdrop-filter:blur(4px);
+  transition:opacity .2s,background .18s,color .18s,transform .18s,box-shadow .18s}
+.rail-btn svg{display:block}
+.rail-btn:hover{background:var(--sea-deep);color:#fff;transform:translateY(-50%) scale(1.06);box-shadow:0 10px 24px rgba(16,52,86,.24)}
+.rail-btn:active{transform:translateY(-50%) scale(.96)}
+.rail-btn:focus-visible{outline:3px solid var(--sun);outline-offset:3px}

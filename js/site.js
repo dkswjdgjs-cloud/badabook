@@ -1,6 +1,9 @@
 // 가로 넘기기 줄(출판사·이달 소식): 화살표 버튼, 다 보이면 버튼·안내 숨김
 function railButtons(rail, hint) {
   var wrap = rail.parentNode, prev = wrap.querySelector(".prev"), next = wrap.querySelector(".next");
+  var icon = function (d) { return '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'; };
+  prev.innerHTML = icon("M14.5 5.5 8 12l6.5 6.5");
+  next.innerHTML = icon("M9.5 5.5 16 12l-6.5 6.5");
   var update = function () {
     var max = rail.scrollWidth - rail.clientWidth;
     wrap.classList.toggle("fits", max <= 2);
