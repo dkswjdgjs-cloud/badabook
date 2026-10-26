@@ -32,9 +32,17 @@ function railButtons(rail, hint) {
   if (location.hash) history.replaceState(null, "", location.pathname + location.search);
   var html = document.documentElement;
   var top = function () { html.style.scrollBehavior = "auto"; window.scrollTo(0, 0); html.style.scrollBehavior = ""; };
+  // 섹션 제목이 머리 메뉴 바로 아래 오도록 이동 (카드 아래까지 한 화면에 더 보이게)
+  var goTo = function (t, smooth) {
+    var head = document.querySelector("header"), title = t.querySelector("h2") || t;
+    var y = title.getBoundingClientRect().top + window.pageYOffset - (head ? head.offsetHeight : 0) - 20;
+    if (!smooth) html.style.scrollBehavior = "auto";
+    window.scrollTo({ top: Math.max(0, y), behavior: smooth ? "smooth" : "auto" });
+    if (!smooth) html.style.scrollBehavior = "";
+  };
   var land = function () {
     var t = go && document.querySelector(go);
-    if (t) t.scrollIntoView(); else top();
+    if (t) goTo(t, false); else top();
   };
   var moved = false;
   ["touchstart", "wheel", "keydown"].forEach(function (ev) { window.addEventListener(ev, function () { moved = true; }, { once: true, passive: true }); });
@@ -48,7 +56,7 @@ function railButtons(rail, hint) {
     var t = document.querySelector(a.getAttribute("href"));
     if (!t) return;
     e.preventDefault();
-    t.scrollIntoView({ behavior: "smooth" });
+    goTo(t, true);
   });
 })();
 
