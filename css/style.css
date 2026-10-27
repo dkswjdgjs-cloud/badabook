@@ -276,3 +276,5 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 .rail-btn:hover{background:var(--sea-deep);color:#fff;transform:translateY(-50%) scale(1.06);box-shadow:0 10px 24px rgba(16,52,86,.24)}
 .rail-btn:active{transform:translateY(-50%) scale(.96)}
 .rail-btn:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+/* 화살표는 넓은 화면이나 마우스가 있는 기기면 항상 보이게 (터치 겸용 노트북·태블릿 가로 화면 포함) */
+@media (min-width:1024px), (any-pointer:fine){.pub-rail-wrap:not(.fits) .rail-btn{display:grid}}
