@@ -356,6 +356,9 @@ def main() -> int:
         save_events(ev)
     state["seen"] = sorted(seen)[-300:]
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # 홈페이지에 "마지막 확인 시각"을 작게 보여 주기 위해 매번 기록
+    now = dt.datetime.now(KST).replace(second=0, microsecond=0).isoformat()
+    (ROOT / "data" / "last-check.js").write_text(f'window.EVENTS_CHECKED = "{now}";\n', encoding="utf-8")
     print("행사 데이터 갱신됨" if changed else "바뀐 내용 없음")
     return 0
 

@@ -283,3 +283,7 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 .pub-card{margin-right:0}
 @media (max-width:1023px){.pub-rail{grid-auto-columns:calc((100% - 36px)/3)}}
 @media (max-width:760px){.pub-rail{grid-auto-columns:72%}}
+
+/* 이달 소식 제목 옆 '마지막 업데이트' 표시 */
+.sec-title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sec-title .stamp{font-size:13px;color:var(--ink-soft);background:rgba(255,255,255,.55);padding:2px 10px;border-radius:999px;white-space:nowrap}

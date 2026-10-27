@@ -72,6 +72,13 @@ function railButtons(rail, hint) {
 
   if (grid) {
     var t = document.getElementById("news-title"); if (t) t.textContent = (now.getMonth() + 1) + "월 소식";
+    // 아침 자동 확인 시각 (data/last-check.js)
+    var stamp = document.getElementById("news-updated"), ck = window.EVENTS_CHECKED && new Date(window.EVENTS_CHECKED);
+    if (stamp && ck && !isNaN(ck)) {
+      var hh = ck.getHours(), mm = ("0" + ck.getMinutes()).slice(-2);
+      stamp.textContent = (ck.getMonth() + 1) + "월 " + ck.getDate() + "일 " + (hh < 12 ? "오전 " : "오후 ") + (hh % 12 || 12) + ":" + mm + " 업데이트";
+      stamp.hidden = false;
+    }
     var live = items.filter(function (it) {
       if (it.kind !== "promo") return false;
       if (it.always) return true;
