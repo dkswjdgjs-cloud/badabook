@@ -278,3 +278,8 @@ a.promo:hover,a.promo:focus-visible{transform:translateY(-3px);box-shadow:0 8px 
 .rail-btn:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 /* 화살표는 넓은 화면이나 마우스가 있는 기기면 항상 보이게 (터치 겸용 노트북·태블릿 가로 화면 포함) */
 @media (min-width:1024px), (any-pointer:fine){.pub-rail-wrap:not(.fits) .rail-btn{display:grid}}
+/* 출판사 카드: PC는 한 화면에 딱 4개, 중간 화면 3개 (그림자 잘리지 않게 오른쪽 여유) */
+.pub-rail{grid-auto-columns:calc((100% - 54px)/4);padding-right:6px}
+.pub-card{margin-right:0}
+@media (max-width:1023px){.pub-rail{grid-auto-columns:calc((100% - 36px)/3)}}
+@media (max-width:760px){.pub-rail{grid-auto-columns:72%}}
