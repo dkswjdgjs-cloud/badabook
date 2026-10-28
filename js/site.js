@@ -44,7 +44,22 @@ function railButtons(rail, hint) {
     window.scrollTo({ top: Math.max(0, y), behavior: smooth ? "smooth" : "auto" });
     if (!smooth) html.style.scrollBehavior = "";
   };
+  // 뒤로 가기로 돌아왔으면 보던 자리(페이지 높이 + 넘겨 둔 가로 줄)로 복원
+  var nav = (performance.getEntriesByType && performance.getEntriesByType("navigation")[0]) || {};
+  var POS = "bada-pos:" + location.pathname + location.search, saved = null;
+  try { saved = nav.type === "back_forward" ? JSON.parse(sessionStorage.getItem(POS) || "null") : null; } catch (e) {}
+  var RAILS = ["promo-grid", "pub-rail"];
+  window.addEventListener("pagehide", function () {
+    var pos = { y: window.pageYOffset, rails: {} };
+    RAILS.forEach(function (id) { var r = document.getElementById(id); if (r) pos.rails[id] = r.scrollLeft; });
+    try { sessionStorage.setItem(POS, JSON.stringify(pos)); } catch (e) {}
+  });
   var land = function () {
+    if (saved) {
+      RAILS.forEach(function (id) { var r = document.getElementById(id); if (r && saved.rails && saved.rails[id]) r.scrollLeft = saved.rails[id]; });
+      html.style.scrollBehavior = "auto"; window.scrollTo(0, saved.y || 0); html.style.scrollBehavior = "";
+      return;
+    }
     var t = go && document.querySelector(go);
     if (t) goTo(t, false); else top();
   };
@@ -52,7 +67,7 @@ function railButtons(rail, hint) {
   ["touchstart", "wheel", "keydown"].forEach(function (ev) { window.addEventListener(ev, function () { moved = true; }, { once: true, passive: true }); });
   land();
   window.addEventListener("load", function () { if (!moved) land(); });
-  window.addEventListener("pageshow", function (e) { if (e.persisted) top(); });
+  // 브라우저가 페이지를 통째로 기억해 둔 경우(뒤로 가기)는 그 위치 그대로 둠
   // 메뉴를 눌러도 주소창에 #이 남지 않게
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest('a[href^="#"]');
