@@ -15,6 +15,8 @@ function railButtons(rail, hint) {
   window.addEventListener("resize", update);
   rail.addEventListener("scroll", update, { passive: true });
   window.addEventListener("load", update);
+  // 숨겨져 있다가(비밀번호 화면 등) 보이게 될 때도 다시 계산
+  if ("ResizeObserver" in window) new ResizeObserver(update).observe(rail);
   var step = function (dir) {
     var card = rail.firstElementChild, gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
     var w = card ? card.getBoundingClientRect().width + gap : rail.clientWidth * 0.8;

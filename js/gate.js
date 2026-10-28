@@ -15,7 +15,7 @@
       e.preventDefault();
       crypto.subtle.digest("SHA-256", new TextEncoder().encode(i.value.trim())).then(function (b) {
         var h = Array.prototype.map.call(new Uint8Array(b), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
-        if (h === HASH) { try { sessionStorage.setItem(KEY, h); } catch (e) {} g.remove(); st.remove(); window.scrollTo(0, 0); }
+        if (h === HASH) { try { sessionStorage.setItem(KEY, h); } catch (e) {} g.remove(); st.remove(); window.scrollTo(0, 0); window.dispatchEvent(new Event("resize")); }
         else { g.querySelector(".err").textContent = "비밀번호가 맞지 않아요."; i.select(); }
       });
     });
