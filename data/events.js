@@ -13,7 +13,8 @@ window.EVENTS = {
       "image": "images/promo-kkoma.jpg",
       "start": "2026-10-01",
       "end": "2026-10-31",
-      "link": "https://blog.naver.com/badaikidsbook/224428026781"
+      "link": "https://blog.naver.com/badaikidsbook/224428026781",
+      "since": "2026-10-22"
     },
     {
       "id": "manual-october",
@@ -26,7 +27,8 @@ window.EVENTS = {
       "image": "images/promo-october.jpg",
       "start": "2026-10-01",
       "end": "2026-10-31",
-      "link": ""
+      "link": "",
+      "since": "2026-10-22"
     },
     {
       "id": "manual-pay",
@@ -40,7 +42,8 @@ window.EVENTS = {
       "image": "",
       "start": "",
       "end": "",
-      "link": "https://blog.naver.com/badaikidsbook/224416259331"
+      "link": "https://blog.naver.com/badaikidsbook/224416259331",
+      "since": "2026-10-22"
     },
     {
       "id": "manual-class-2026-10",
@@ -64,7 +67,8 @@ window.EVENTS = {
           "target": "5세 이상 자녀 부모"
         }
       ],
-      "link": "https://blog.naver.com/badaikidsbook/224431811230"
+      "link": "https://blog.naver.com/badaikidsbook/224431811230",
+      "since": "2026-10-22"
     },
     {
       "id": "blog-224397104796",

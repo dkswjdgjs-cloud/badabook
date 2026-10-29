@@ -89,6 +89,7 @@ def post_content(log_no: str) -> tuple[str, List[str]]:
 
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-flash-latest"
+FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL") or "gemini-flash-lite-latest"
 
 
 # ---------- 제미나이가 채울 형식 ----------
@@ -168,8 +169,13 @@ def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
     parts.append({"text": f"게시일: {posted}\n\n블로그 글:\n{caption or '(글 없음)'}"})
     cfg = {"responseMimeType": "application/json", "responseSchema": SCHEMA, "temperature": 0.2,
            "thinkingConfig": {"thinkingLevel": "low"}}  # 생각을 짧게 해서 빨리 답하게
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
-    for attempt in range(3):
+    # 붐빌 때(503·응답 늦음)는 쉬었다 다시, 그래도 안 되면 가벼운 모델로 한 번 더
+    plan = [GEMINI_MODEL, GEMINI_MODEL, GEMINI_MODEL, FALLBACK_MODEL, FALLBACK_MODEL]
+    out, last = None, None
+    for attempt, model in enumerate(plan):
+        if attempt:
+            time.sleep(min(15 * attempt, 45))
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
         body = json.dumps({
             "system_instruction": {"parts": [{"text": SYSTEM}]},
             "contents": [{"role": "user", "parts": parts}],
@@ -178,26 +184,28 @@ def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
         req = urllib.request.Request(url, data=body, method="POST",
                                      headers={"Content-Type": "application/json", "x-goog-api-key": key})
         try:
-            with urllib.request.urlopen(req, timeout=180) as r:
+            with urllib.request.urlopen(req, timeout=120) as r:
                 out = json.load(r)
+            if model != GEMINI_MODEL:
+                print(f"  ({model} 모델로 분석함)", flush=True)
             break
         except urllib.error.HTTPError as e:
             msg = e.read()[:400].decode("utf-8", "replace")
-            print(f"  제미나이 응답 {e.code}: {msg}", flush=True)
-            if e.code == 400 and "thinking" in msg.lower() and "thinkingConfig" in cfg and attempt < 2:
+            print(f"  [{model}] 제미나이 응답 {e.code}: {msg[:160]}", flush=True)
+            last = RuntimeError(f"제미나이 오류 {e.code}")
+            if e.code == 400 and "thinking" in msg.lower() and "thinkingConfig" in cfg:
                 cfg = {k: v for k, v in cfg.items() if k != "thinkingConfig"}  # 이 모델이 설정을 모르면 빼고 다시
                 continue
-            if e.code in (500, 503) and attempt < 2:  # 일시 오류면 잠깐 쉬고 다시
-                time.sleep(20)
+            if e.code in (500, 502, 503, 504):  # 일시 오류
                 continue
             if e.code == 429:
                 raise QuotaError(msg)
-            raise RuntimeError(f"제미나이 오류 {e.code}")
+            raise last
         except (TimeoutError, OSError) as e:
-            print(f"  제미나이 응답 늦음 ({e})", flush=True)
-            if attempt < 1:
-                continue
-            raise
+            print(f"  [{model}] 제미나이 응답 늦음 ({e})", flush=True)
+            last = e
+    if out is None:
+        raise last or RuntimeError("제미나이 응답 없음")
     text = "".join(p.get("text", "") for p in out["candidates"][0]["content"]["parts"])
     return Post.model_validate_json(text)
 
@@ -329,6 +337,16 @@ def main() -> int:
             if item["sessions"]:
                 item["end"] = item["end"] or max(s["date"] for s in item["sessions"])
         dup = duplicate_of(item, ev["items"])
+        old = next((o for o in ev["items"] if o["id"] == dup), None) if dup else None
+        if old and old.get("source") == "manual" and old.get("since") and posted > old["since"]:
+            # 직접 넣은 카드보다 나중에 올라온 글이면 새 소식이므로 그 카드를 새 글로 바꿈
+            print(f"  직접 넣은 카드({dup})보다 새 글이라 교체")
+            if old.get("always") and not item["end"]:
+                item["always"] = True
+            if old.get("featured"):
+                item["featured"] = True
+            ev["items"] = [o for o in ev["items"] if o["id"] != dup]
+            dup = ""
         if dup:
             print(f"  이미 있는 카드({dup})와 같은 행사라 건너뜀")
             for o in ev["items"]:
