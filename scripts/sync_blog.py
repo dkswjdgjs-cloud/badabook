@@ -2,7 +2,7 @@
 
 로그인 없이 공개 RSS(rss.blog.naver.com/<아이디>.xml)를 읽는다. GitHub Actions가 매일 실행한다.
 필요한 비밀값: GEMINI_API_KEY (aistudio.google.com, 무료)
-선택 변수: GEMINI_MODEL (기본 gemini-flash-latest), NAVER_BLOG_ID (기본 badaikidsbook)
+선택 변수: GEMINI_MODEL (기본 gemini-flash-lite-latest, 붐비면 gemini-flash-latest로 재시도), NAVER_BLOG_ID (기본 badaikidsbook)
 """
 
 import base64
@@ -88,8 +88,8 @@ def post_content(log_no: str) -> tuple[str, List[str]]:
     return text[:6000], imgs[:MAX_IMAGES]
 
 
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-flash-latest"
-FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL") or "gemini-flash-lite-latest"
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL") or "gemini-flash-lite-latest"
+FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL") or "gemini-flash-latest"
 
 
 # ---------- 제미나이가 채울 형식 ----------
@@ -169,7 +169,7 @@ def analyze(key: str, caption: str, posted: str, jpegs: List[bytes]) -> Post:
     parts.append({"text": f"게시일: {posted}\n\n블로그 글:\n{caption or '(글 없음)'}"})
     cfg = {"responseMimeType": "application/json", "responseSchema": SCHEMA, "temperature": 0.2,
            "thinkingConfig": {"thinkingLevel": "low"}}  # 생각을 짧게 해서 빨리 답하게
-    # 붐빌 때(503·응답 늦음)는 쉬었다 다시, 그래도 안 되면 가벼운 모델로 한 번 더
+    # 기본은 가벼운 모델. 붐빌 때(503·응답 늦음)는 쉬었다 다시, 그래도 안 되면 다른 모델로 한 번 더
     plan = [GEMINI_MODEL, GEMINI_MODEL, GEMINI_MODEL, FALLBACK_MODEL, FALLBACK_MODEL]
     out, last = None, None
     for attempt, model in enumerate(plan):
