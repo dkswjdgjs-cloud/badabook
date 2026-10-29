@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-10-25",
+  "updated": "2026-10-29",
   "items": [
     {
       "id": "manual-kkoma",
@@ -28,21 +28,6 @@ window.EVENTS = {
       "start": "2026-10-01",
       "end": "2026-10-31",
       "link": "",
-      "since": "2026-10-22"
-    },
-    {
-      "id": "manual-pay",
-      "source": "manual",
-      "kind": "promo",
-      "always": true,
-      "tag": "결제 혜택",
-      "title": "인천e음 10% 캐시백",
-      "body": "천사지원금, 온누리상품권(디지털·지류), 상생페이백, 문화누리카드, 제로페이를 쓸 수 있어요. 비씨·농협·삼성카드는 3개월 무이자예요.",
-      "meta": "매장 방문이 어려우면 비대면 결제도 가능해요",
-      "image": "",
-      "start": "",
-      "end": "",
-      "link": "https://blog.naver.com/badaikidsbook/224416259331",
       "since": "2026-10-22"
     },
     {
@@ -153,6 +138,20 @@ window.EVENTS = {
       "end": "2026-10-31",
       "posted": "2026-10-01",
       "link": "https://blog.naver.com/badaikidsbook/224427963395"
+    },
+    {
+      "id": "blog-224456793617",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "결제 혜택 · 11/15(일) 마감",
+      "title": "인천e음 결제 15% 캐시백 혜택",
+      "body": "코리아 그랜드 페스티벌 기간 동안 인천e음 카드로 결제하시면 15% 캐시백 혜택을 드려요. 50만 원 한도 내에서 비대면 QR 결제와 천사지원금 사용도 가능해요. 예산 소진 시 조기 종료될 수 있으니 서둘러 문의해 주세요.",
+      "meta": "50만 원 한도 내 15% 캐시백 (예산 소진 시 종료)",
+      "image": "images/events/blog-224456793617.jpg",
+      "start": "2026-10-29",
+      "end": "2026-11-15",
+      "posted": "2026-10-28",
+      "link": "https://blog.naver.com/badaikidsbook/224456793617"
     }
   ]
 };
