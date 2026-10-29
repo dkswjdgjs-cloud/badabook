@@ -377,6 +377,11 @@ def main() -> int:
     # 홈페이지에 "마지막 확인 시각"을 작게 보여 주기 위해 매번 기록
     now = dt.datetime.now(KST).replace(second=0, microsecond=0).isoformat()
     (ROOT / "data" / "last-check.js").write_text(f'window.EVENTS_CHECKED = "{now}";\n', encoding="utf-8")
+    # 브라우저가 예전 행사 파일을 기억하지 않도록 홈페이지의 파일 주소에 새 번호를 붙임
+    page = ROOT / "index.html"
+    ver = dt.datetime.now(KST).strftime("%Y%m%d%H%M")
+    html_text = re.sub(r'(data/(?:events|last-check)\.js)(\?v=\d+)?"', rf'\1?v={ver}"', page.read_text(encoding="utf-8"))
+    page.write_text(html_text, encoding="utf-8")
     print("행사 데이터 갱신됨" if changed else "바뀐 내용 없음")
     return 0
 
