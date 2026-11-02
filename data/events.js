@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-10-29",
+  "updated": "2026-11-02",
   "items": [
     {
       "id": "manual-kkoma",
@@ -152,6 +152,48 @@ window.EVENTS = {
       "end": "2026-11-15",
       "posted": "2026-10-28",
       "link": "https://blog.naver.com/badaikidsbook/224456793617"
+    },
+    {
+      "id": "blog-224461026090",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "11월 출판사 이벤트 · 11/30(월) 마감",
+      "title": "그레이트북스 11월 구매 혜택",
+      "body": "그레이트북스 전집 구매 고객에게 풍성한 사은품과 혜택을 드려요. 2질 이상 구매 시 소전집, 용품 등 추가 혜택도 받아 가세요.",
+      "meta": "기간: 11월 1일 ~ 11월 30일",
+      "image": "images/events/blog-224461026090.jpg",
+      "start": "2026-11-01",
+      "end": "2026-11-30",
+      "posted": "2026-11-01",
+      "link": "https://blog.naver.com/badaikidsbook/224461026090"
+    },
+    {
+      "id": "blog-224461017409",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "11월 출판사 이벤트",
+      "title": "11월 아람북스 구매 이벤트",
+      "body": "아람 전집을 구매하시는 분들께 다양한 사은품을 드려요. 자연이올 구매 시 밸런스 트리 세트를, 베이비올 명화음악 구매 시 코끼리 세계창작 7권을 드려요. 2질 이상 구매 시 소전집을 추가로 증정하니 많은 관심 부탁드려요.",
+      "meta": "11월 1일 ~ 11월 30일",
+      "image": "images/events/blog-224461017409.jpg",
+      "start": "2026-11-01",
+      "end": "2026-11-30",
+      "posted": "2026-11-01",
+      "link": "https://blog.naver.com/badaikidsbook/224461017409"
+    },
+    {
+      "id": "blog-224460955643",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "11월 출판사 이벤트",
+      "title": "11월 성우출판사 구매 혜택",
+      "body": "도서출판 성우 전집 구매 시 꼬마 생각 일력과 소전집 등 다양한 사은품을 드려요. 꼬마 생각 뒤집기 구매 시 영상 기간 연장 혜택도 받을 수 있어요.",
+      "meta": "2026.11.01 ~ 2026.11.30",
+      "image": "images/events/blog-224460955643.jpg",
+      "start": "2026-11-01",
+      "end": "2026-11-30",
+      "posted": "2026-11-01",
+      "link": "https://blog.naver.com/badaikidsbook/224460955643"
     }
   ]
 };
