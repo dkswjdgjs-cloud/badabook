@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-11-02",
+  "updated": "2026-11-03",
   "items": [
     {
       "id": "manual-kkoma",
@@ -194,6 +194,20 @@ window.EVENTS = {
       "end": "2026-11-30",
       "posted": "2026-11-01",
       "link": "https://blog.naver.com/badaikidsbook/224460955643"
+    },
+    {
+      "id": "blog-224462268274",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "11월 신간 출시 · 주문 이벤트",
+      "title": "베이비올 명화음악 리뉴얼",
+      "body": "베이비올 명화음악이 리뉴얼되어 새롭게 출시되었어요. 11월 한정 사은품과 서점 추가 혜택을 놓치지 마세요.",
+      "meta": "399,000원 / 11월 한정 사은품 증정",
+      "image": "images/events/blog-224462268274.jpg",
+      "start": "2026-11-02",
+      "end": "",
+      "posted": "2026-11-02",
+      "link": "https://blog.naver.com/badaikidsbook/224462268274"
     }
   ]
 };
