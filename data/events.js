@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-11-03",
+  "updated": "2026-11-04",
   "items": [
     {
       "id": "manual-kkoma",
@@ -208,6 +208,20 @@ window.EVENTS = {
       "end": "",
       "posted": "2026-11-02",
       "link": "https://blog.naver.com/badaikidsbook/224462268274"
+    },
+    {
+      "id": "blog-224463347465",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "가격인상 안내 · 12/01(화) 적용",
+      "title": "그레이트북스 전집 가격 인상 안내",
+      "body": "그레이트북스 일부 전집 가격이 12월 1일부터 인상돼요. 구매를 계획하셨던 분들은 인상 전인 11월에 서점에서 준비해 보세요.",
+      "meta": "2026-12-01 인상 적용",
+      "image": "images/events/blog-224463347465.jpg",
+      "start": "2026-11-03",
+      "end": "2026-11-30",
+      "posted": "2026-11-03",
+      "link": "https://blog.naver.com/badaikidsbook/224463347465"
     }
   ]
 };
