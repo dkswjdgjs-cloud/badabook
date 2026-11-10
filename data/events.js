@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-11-04",
+  "updated": "2026-11-10",
   "items": [
     {
       "id": "manual-kkoma",
@@ -222,6 +222,29 @@ window.EVENTS = {
       "end": "2026-11-30",
       "posted": "2026-11-03",
       "link": "https://blog.naver.com/badaikidsbook/224463347465"
+    },
+    {
+      "id": "blog-224471347779",
+      "source": "blog",
+      "kind": "class",
+      "tag": "부모교실 · 11/17(화) 진행",
+      "title": "아람북스 11월 맘클래스",
+      "body": "창의력의 정의와 키우는 방법을 알아보는 아람북스 부모 교육이에요. 영종책바다 어린이서점에서 부모님들을 모시고 진행해요.",
+      "meta": "2026년 11월 17일 화요일 오전 10시 30분",
+      "image": "images/events/blog-224471347779.jpg",
+      "start": "2026-11-10",
+      "end": "2026-11-17",
+      "posted": "2026-11-10",
+      "link": "https://blog.naver.com/badaikidsbook/224471347779",
+      "sessions": [
+        {
+          "date": "2026-11-17",
+          "time": "10:30",
+          "title": "AI시대 유일한 경쟁력, 도대체 창의력이 뭐예요?",
+          "info": "창의력의 정의와 창의력을 키우는 독서 전략과 질문법",
+          "target": "부모님"
+        }
+      ]
     }
   ]
 };
