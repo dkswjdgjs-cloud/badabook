@@ -1,5 +1,5 @@
 window.EVENTS = {
-  "updated": "2026-11-10",
+  "updated": "2026-11-19",
   "items": [
     {
       "id": "manual-kkoma",
@@ -245,6 +245,20 @@ window.EVENTS = {
           "target": "부모님"
         }
       ]
+    },
+    {
+      "id": "blog-224483128142",
+      "source": "blog",
+      "kind": "promo",
+      "tag": "사전예약 · 2026 개정판",
+      "title": "내 친구 과학공룡 개정판 사전예약",
+      "body": "4-7세 대표 과학 전집 내 친구 과학공룡 2026년 개정판 사전 예약을 진행합니다. 새롭게 태어나는 과학공룡을 미리 만나보세요.",
+      "meta": "2026 개정판 사전 예약 중",
+      "image": "images/events/blog-224483128142.jpg",
+      "start": "2026-11-19",
+      "end": "",
+      "posted": "2026-11-19",
+      "link": "https://blog.naver.com/badaikidsbook/224483128142"
     }
   ]
 };
